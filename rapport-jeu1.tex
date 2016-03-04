@@ -1,0 +1,53 @@
+\subsection{État du jeu}
+
+\subsection{Configuration initiale du jeu}
+\begin{itemize}
+        \item 
+        Grille modulable selon le niveau (surface différente)
+        \item 
+        Bonbons de couleurs (jaune rouge vert bleu orange)
+        \item 
+        Bonbons spéciaux (explosion horizontale/verticale, poisson, bombe multicolore, bombe à retardement, bombe colorante)
+        \item 
+        bloqueurs (bloque présence bonbon, bloque le bonbon)
+        \item 
+        Nombre de coups pour réussir / temps
+        \item 
+        Score
+        \item 
+        Jauge à remplir pour les étoiles
+        \item 
+        Objectif à réaliser
+\end{itemize}
+
+\subsection{Évolution de l'état du jeu}
+\begin{itemize}
+    \item 
+    Echange deux bonbons côte à côte (verticalement ou horizontalement) seulement si cela permet une combinaison. Sinon, le mouvement n'aboutit pas.
+    \item 
+    Acheter des aides
+    \item 
+    Utilisation de l'aide (si disponible - en fonction des achats du joueur)
+    \item 
+    Combinaisons produisent un bonbon spécial:
+\begin{itemize}
+\item
+Combinaison de 4 donne un bonbon qui détruit une colonne ou une ligne entière
+\item
+Combinaison de 5 donne une bombe multicolore qui détruit tout les bonbons d'une couleur
+\item
+Combinaison de 5 bonbons non-alignés donne un bonbon qui détruit ceux autour de lui
+\item
+Bonbon à retardement automatique après 5 bonbons non-alignés
+\item
+Association de deux bonbons spéciaux : association des deux bonus
+\end{itemize}
+\item
+Combos : une combinaison peut en entrainer une autre et ainsi de suite
+\item
+Les bonbons détruits sont remplacés par d'autres
+\item
+A la fin du niveau : destruction automatique des bonbons spéciaux (et transformation des coups restant en bonbons spéciaux)
+\item
+Perte d'une vie lors de la perte d'un niveau. Si 
+\end{itemize}

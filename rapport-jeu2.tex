@@ -1,0 +1,18 @@
+\subsection{État du jeu}
+\begin{typeag}[Personnage]
+        \variable{vies}{entier}{Nombre de vies du personnage}\\
+        \variable{positionX}{entier}{Abcisse du personnage sur la zone}\\
+        \variable{positionY}{entier}{Ordonnée du personnage sur la zone}
+\end{typeag}
+
+\subsection{Configuration initiale du jeu}
+
+\subsection{Évolution de l'état du jeu}
+Le jeu va tourner en boucle jusqu'à ce que l'on perde toutes nos vies et que le score bonus ne nous en redonne pas :
+\begin{lstlisting}
+while ( personnage.vies > 0 ) {
+	// Recuperation des entrees
+	// Traitement et declenchement des sons
+	// Affichage a l'ecran
+}
+\end{lstlisting}

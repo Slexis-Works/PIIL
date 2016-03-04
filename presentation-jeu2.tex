@@ -1,0 +1,43 @@
+\subsection{État du jeu}
+\begin{frame}{État du jeu}
+	{\texttt{*} signifie constant} % Ça fait bizarre là où c'est mais ça gêne pas
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{typeag}{Personnage}
+				\variable{vies}{entier}\\
+				\variable{positionX}{entier}\\
+				\variable{positionY}{entier}\\
+				\variable{vitesse}{entier*}
+			\end{typeag}
+			
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{typeag}{Poule}
+				\variable{vies}{entier*}\\
+				\variable{positionX}{entier ou réel}\\
+				\variable{positionY}{entier ou réel}
+			\end{typeag}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Configuration initiale du jeu}
+\begin{frame}{Configuration initiale du jeu}
+	\begin{typeag}{Personnage}
+		\variablei{vies}{2}\\
+		\variablei{positionX}{largeurEcran/2}\\
+		\variablei{positionY}{hauteurEcran-hauteurPersonnage}
+	\end{typeag}
+\end{frame}
+
+\subsection{Évolution de l'état du jeu}
+\begin{frame}[fragile]{Boucle principale}
+	\begin{lstlisting}
+		while ( personnage.vies > 0 ) {
+			// Recuperation des entrees
+			// Traitement
+			// Affichage a l'ecran
+		}
+	\end{lstlisting}
+
+\end{frame}

@@ -1,0 +1,76 @@
+\documentclass[a4paper, 12pt, twoside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % Enlève plein de warnings :D et permet le tt gras
+\usepackage[french]{babel}
+
+% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+% \usepackage{mathrsfs}
+
+\usepackage{scrextend}
+
+\usepackage{color}
+\usepackage{listings}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.95,0.95,0.95}
+\lstset{
+	backgroundcolor=\color{lbcolor},
+	tabsize=4,
+	rulecolor=,
+	language=Java,
+	basicstyle=\small\ttfamily,
+	upquote=false,
+	aboveskip={.5\baselineskip},
+	columns=fixed,
+	showstringspaces=false,
+	extendedchars=true,
+	showspaces=false,
+	breaklines=true,
+	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	frame=single,
+	showtabs=false,
+	identifierstyle=\ttfamily,
+	keywordstyle=\bfseries\color[rgb]{0,0,1},
+	commentstyle=\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+% ---------------
+% Commmandes
+% ---------------
+
+% Argument obligatoire : nom du type agrégé
+\newenvironment{typeag}[1][]{\noindent \textbf{type} \texttt{#1} \{\begin{addmargin}[2em]{0em}}{\end{addmargin}\}}
+% Arguments obligatoires : Nom — Type — Description
+\newcommand{\variable}[3]{\noindent \texttt{#1} : \textit{#2} --- #3}
+
+% \renewcommand\arraystretch{1.2}
+
+% ---------------
+% Main
+% ---------------
+\title{Projet d'Initiation à l'Ingénierie Logicielle\\Rapport groupe \no 3}
+\author{Mohammed \bsc{Lakal}\\Émile \bsc{Jeannin}\\Théo \bsc{Mottet}\\Alexis \bsc{Cabodi}}
+\date{Révision du\\\today}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\section{Jeu 1 : Candy Crush}
+\input{rapport-jeu1.tex}
+
+\section{Jeu 2 : Centipede}
+\input{rapport-jeu2.tex}
+
+\section{Conclusion}
+
+\end{document}
