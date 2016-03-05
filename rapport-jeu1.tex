@@ -21,33 +21,76 @@
 \end{itemize}
 
 \subsection{Évolution de l'état du jeu}
+\subsubsection{Vérification du déplacement}
+Avant de pouvoir échanger deux cases, il faut vérifier plusieurs choses :
 \begin{itemize}
-    \item 
-    Echange deux bonbons côte à côte (verticalement ou horizontalement) seulement si cela permet une combinaison. Sinon, le mouvement n'aboutit pas.
-    \item 
-    Acheter des aides
-    \item 
-    Utilisation de l'aide (si disponible - en fonction des achats du joueur)
-    \item 
-    Combinaisons produisent un bonbon spécial:
-\begin{itemize}
-\item
-Combinaison de 4 donne un bonbon qui détruit une colonne ou une ligne entière
-\item
-Combinaison de 5 donne une bombe multicolore qui détruit tout les bonbons d'une couleur
-\item
-Combinaison de 5 bonbons non-alignés donne un bonbon qui détruit ceux autour de lui
-\item
-Bonbon à retardement automatique après 5 bonbons non-alignés
-\item
-Association de deux bonbons spéciaux : association des deux bonus
-\end{itemize}
-\item
-Combos : une combinaison peut en entrainer une autre et ainsi de suite
-\item
-Les bonbons détruits sont remplacés par d'autres
-\item
-A la fin du niveau : destruction automatique des bonbons spéciaux (et transformation des coups restant en bonbons spéciaux)
-\item
-Perte d'une vie lors de la perte d'un niveau. Si 
+	\item
+		Le déplacement ne sort pas de la grille
+\begin{lstlisting}
+caseDestination.x >= 0 && caseDestination.x < tailleGrilleX && caseDestination.y >= 0 && caseDestination.y < tailleGrilleY
+\end{lstlisting}
+	\item
+		Le déplacement ne va pas sur une case non-jouable
+\begin{lstlisting}
+grille[caseDestination.x][caseDestination.y] != 0 && grille[caseADeplacer.x][caseADeplacer.y] != 0
+\end{lstlisting}
+	\item
+		Les cases sont côtes à côtes (si on clique autre part, ça change la position de la caseADeplacer) :
+\begin{lstlisting}
+caseADeplacer.x - caseDestination.x == 1 || caseADeplacer.x - caseDestination.x == -1 || ( caseADeplacer.x - caseDestination.x != 1 && caseADeplacer.x - caseDestination.x != -1 && (caseADeplacer.y - caseDestination.y == 1 || caseADeplacer.y - caseDestination.y == -1) )
+\end{lstlisting}
+	\item
+		Le déplacement va créer un alignement de au moins 3 cases identiques : pour cela, on va tout d'abord échanger les deux cases sélectionnées grace à la case temporaire :
+\begin{lstlisting}
+caseTemporaire = grille[caseDestination.x][caseDestination.y];
+grille[caseDestination.x][caseDestination.y] = grille[caseADeplacer.x][caseADeplacer.y];
+grille[caseADeplacer.x][caseADeplacer.y] = caseTemporaire;
+\end{lstlisting}
+		On peut alors commencer la détection des cases à détruire. Si il n'y a aucune case à détruire (lors de la première fois qu'on cherche), il n'y a donc pas de combinaison, on peut alors rééchanger les cases.
+
+\subsubsection{Détection}	
+	
+Pour pouvoir détecter toutes les cases à détruire, nous utilisons une autre grille de la même taille que celle contenant les éléments, mais cette nouvelle grille contient des booléens. Chaque case est ainsi associée à un booléen. Si la case doit être détruite, le booléens vaudra vrai.
+
+On va ensuite parcourir la première grille ligne par ligne pour marquer tous les alignements horizontaux puis colonne par colonne pour les combinaisons verticales.
+
+Nous avons besoin de quelques nouvelles variables :
+
+\begin{lstlisting}
+int couleurTemp; // Couleur temporaire qui va servir pour verifier que plusieurs cases sont identiques
+int nbCasesAlignees; // Sert a compter le nombre de cases alignees
+\end{lstlisting}
+
+Pour parcourir la grille :
+
+\begin{lstlisting}
+for(int j = 0; j < tailleGrilleY; j++)
+{
+	couleurTemp = grille[0][j]; // La couleur temporaire est egale a la premiere case de la grille
+	nbCasesAlignees = 1; // Le nombre de cases alignees est egal a 1 en debut de ligne
+	/** Parcours des lignes **/
+	for(int i = 0; i < tailleGrilleX; i++)
+	{
+		if(couleurTemp == grille[i][j]) // Si la couleur temporaire est la meme dans cette case, on incremente nbCasesAlignees
+			nbCasesAlignees++;
+		else if(nbCasesAlignees >= 3)
+		{
+			// Si la couleur n'est pas la meme mais qu'on a un alignement, on note dans le deuxieme tableau
+			nbCasesAlignees = 1;
+			couleurTemp = grille[i][j];
+			pasDeCasesADetruire = false;
+		}
+		else
+		{
+			nbCasesAlignees = 1;
+			couleurTemp = grille[i][j];
+		}
+
+		if(i == tailleGrilleX - 1 && nbCasesAlignees >= 3) 
+			/* Si on atteind le bord de la grille et qu'on a un alignement de plus de 3,
+			on note dans le tableau apres avoir incremente i, pour utiliser la meme fonction de notation dans l'autre tableau. */
+	}
+} 
+\end{lstlisting}
+
 \end{itemize}
