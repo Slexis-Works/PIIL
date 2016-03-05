@@ -1,13 +1,166 @@
+\documentclass[a4paper, 12pt, twoside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % Enlève plein de warnings :D et permet le tt gras
+\usepackage[french]{babel}
+
+% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+% \usepackage{mathrsfs}
+
+\usepackage{scrextend}
+
+\usepackage{color}
+\usepackage{listings}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.95,0.95,0.95}
+\lstset{
+	backgroundcolor=\color{lbcolor},
+	tabsize=4,
+	rulecolor=,
+	language=Java,
+	basicstyle=\small\ttfamily,
+	upquote=false,
+	aboveskip={.5\baselineskip},
+	columns=fixed,
+	showstringspaces=false,
+	extendedchars=true,
+	showspaces=false,
+	breaklines=true,
+	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	frame=single,
+	showtabs=false,
+	identifierstyle=\ttfamily,
+	keywordstyle=\bfseries\color[rgb]{0,0,1},
+	commentstyle=\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+% ---------------
+% Commmandes
+% ---------------
+
+% Argument obligatoire : nom du type agrégé
+\newenvironment{typeag}[1][]{\noindent \textbf{type} \texttt{#1} \{\begin{addmargin}[2em]{0em}}{\end{addmargin}\}}
+% Arguments obligatoires : Nom — Type — Description
+\newcommand{\variable}[3]{\noindent \texttt{#1} : \textit{#2} --- #3}
+
+% \renewcommand\arraystretch{1.2}
+
+% ---------------
+% Main
+% ---------------
+\title{Projet d'Initiation à l'Ingénierie Logicielle\\Rapport groupe \no 3}
+\author{Mohammed \bsc{Lakal}\\Émile \bsc{Jeannin}\\Théo \bsc{Mottet}\\Alexis \bsc{Cabodi}}
+\date{Révision du\\\today}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{Jeu 1 : Candy Crush}
+\section{Introduction}
+
+Centipède est un jeu développé par Atari Inc, sorti en 1981. Ce jeu à été réalisé par Dona Bailey et Ed Logg. Centipede est considéré comme le premier jeu à avoir attiré des femmes dans les salles d'arcades. 
+Le joueur se défend contre les centipèdes, les araignées , les scorpions et les puces. Le joueur gagne un round après avoir éliminé le centipede qui serpente entre les champignons. Actuellement le record du monde de centipede en terme de score est de 7 111 111 points. Celui-ci est détenu par Donald Hayes qui à réalisé se record le 5 novembre 2000. 
+C'est pourquoi, dans le cadre du projet ingénierie logiciel nous allons analyser ce jeu, cela nous apportera une première approche du monde de la création de jeu vidéo et du développement d'un tel jeu. 
+\section{Jeu 2 : Centipede}
 \subsection{État du jeu}
+
+Dans cette partie nous traiterons l'état du jeu "Centipede". Au début du jeu : 
+vous avez un personnage : 
+
 \begin{typeag}[Personnage]
         \variable{vies}{entier}{Nombre de vies du personnage}\\
         \variable{positionX}{entier}{Abcisse du personnage sur la zone}\\
         \variable{positionY}{entier}{Ordonnée du personnage sur la zone}
 \end{typeag}
 
+une zone de jeu composé de différents éléments : 
+
+\begin{typeag}[Zone de jeu]
+        \variable{grille}{Champignon c [ligne][colonne]}{représente l'ensemble des cases avec un champignon ou non}\\
+        \variable{couleurs}{entier}{indique le jeu de couleurs du niveau actuel}\\
+        \variable{score}{entier}{nombre qui représente le score du joueur en temps réel}\\
+        \variable{tir}{}{représente le tir unique que possède le joueur}
+        \variable{niveau}{entier}{compteur de niveau}
+\end{typeag}
+
+où  sont aussi disposés des champignons, à noter que ces champignons sont disposés aléatoirement sur la grille, de même que leur nombre. 
+
+Les champignons sont représentés par :
+
+\begin{typeag}[Champignon c]
+        \variable{vie}{entier}{de 0 (pas de champignon) à 4 (champignon "neuf")}\\
+        \variable{vénéneux}{booléen}{indique si le champignon est vénéneux ou pas}\\
+        \variable{positionX}{entier}{Abcisse du champignon sur la zone de jeu}\\
+        \variable{positionY}{entier}{Ordonnée du champignon sur la zone de jeu}
+\end{typeag}
+
+Au départ, il y a aussi un ennemi, le centipede : 
+Celui-ci est représenté comme cela : 
+
+\begin{typeag}[Segment ( 12 segments représentent le centipede)]
+        \variable{état}{entier}{prend la valeur : 0 si le centipede est mort, 1 si le centipede est une tête seule, 2 si le centipede est complet au niveau de ses 12 segments}\\
+        \variable{vitesse}{entier}{indique la vitesse du centipede en fonction du niveau où se trouve le joueur}\\
+        \variable{donnée}{entier}{si estTête respectivement 0,1,2,3 pour haut,bas,gauche,droite, sinon indique quel segment il suit}
+        \variable{positionX}{entier}{Abcisse du centipede sur la zone de jeu}\\
+        \variable{positionY}{entier}{Ordonnée du centipede sur la zone de jeu}
+\end{typeag}
+
+Pour contrer le centipede le joueur dispose d'un tir unique.
+Le tir est représenté comme cela : 
+
+\begin{typeag}[un tir unique]
+        \variable{booléen}{actif}{indique si le projectile est actuellement en mouvement ou prêt à être relancé}\\
+        \variable{vitesse}{entier}{indique la vitesse du tir : celui-ci a toujours la même vitesse dans tous les niveaux}\\
+        \variable{positionX}{entier ou réel}{Abcisse du tir sur la zone de jeu}\\
+        \variable{positionY}{entier ou réel}{Ordonnée du tir sur la zone de jeu}
+\end{typeag}
+
+Néanmoins le joueur ne doit pas vaincre uniquement le centipede, d'autres ennemis apparaissent au fur et à mesure des niveaux que le joueur passe : 
+Ceux ci sont répresnté dans une variable ennemi : 
+
+\begin{typeag}[Ennemi]
+        \variable{type}{entier}{indique le type d'ennemi en face du joueur : 0 = araignée ; 1 = puce ; 2 = scorpion}\\
+        \variable{vitesse}{entier}{indique la vitesse de l'ennemi qui est différente en fonction du niveau joué et du score du joueur}\\
+        \variable{positionX}{entier ou réel}{Abcisse de ou des ennemis sur la zone de jeu}\\
+        \variable{positionY}{entier ou réel}{Ordonnée du tir sur la zone de jeu}
+\end{typeag}
+
+
 \subsection{Configuration initiale du jeu}
+Dans cette seconde partie nous allons traiter la situation de départ du jeu. Dès le lancement du jeu le joueur dispose d'un certain nombre d'éléments : 
+
+\begin{itemize}
+\item 
+	Le joueur dispose d'un compteur de point : son score qui se situe en haut à gauche de son écran de jeu. Celui ci au départ est égal à 0.
+	\item 
+	Le joueur dispose peut également visualiser son score "record" en haut au milieu de son écran de jeu. De cette manière il sait quel score il doit atteindre pour s'améliorer.
+	\item
+	Le joueur peut également visualiser le nombre de vie qu'il possède et qu'il lui reste à utiliser. Celle-ci sont représentées par une tête de lutin, chacune de ces têtes sont situées à coté du score du joueur.
+\end{itemize}
+
+
+Ensuite à chaque début de partie, le joueur à devant lui, sur la  \itshape{Zone de jeu} : 
+
+\begin{itemize}
+	\item
+	Un certain nombre de champignon réparties aléatoirement en nombre et en position sur la  \itshape{Zone de jeu}
+	\item
+	Le centipede, ennemi du joueur, composé de \itshape{Segments} au nombre de 12. Ils sont d'abord de taille 1, et évoluerons par la suite jusqu'à leurs tailles maximales. Le centipede arrive dans la partie depuis le haut de la \itshape{Zone de jeu}, et au milieu de celle ci. 
+\end{itemize}
+ 
+
+
 
 \subsection{Évolution de l'état du jeu}
+
+Dans cette partie nous allons étudier les points d'interaction du jeu avec le joueur, leurs conséquences sur le jeu ainsi que l'évolution automatique de l'état du jeu. 
 Le jeu va tourner en boucle jusqu'à ce que l'on perde toutes nos vies et que le score bonus ne nous en redonne pas :
 \begin{lstlisting}
 while ( personnage.vies > 0 ) {
@@ -16,3 +169,13 @@ while ( personnage.vies > 0 ) {
 	// Affichage a l'ecran
 }
 \end{lstlisting}
+Dans un premier temps, le joueur peut se déplacer soit grâce au flèche du clavier, soit avec la souris. De plus, le joueur afin de se défendre des ennemis à la possibilité de tirer un projectile avec la touche espace, ou le clic gauche de la souris. Or il ne peut le faire que si le projectile n'est pas à l'écran. En effet, il ne peut y avoir qu'un seul projectile sur l'écran, c'est pourquoi le tire est unique. Cependant le joueur peut tout de même afin de se défendre, éviter l'ennemi mais en aucun cas, le joueur ne pourra gagner s'il ne tire pas et ne détruit pas l'ennemi, si le joueur est tenté de faire ça ( toujours éviter l'ennemi, alors, la partie sera infinie. Le joueur restera toujours bloqué au même niveau. De plus, si le joueur rentre en contact avec un des ennemi, alors le joueur ce verra perdre une vie et il meurt. Si le joueur possède encore une vie, alors le niveau recommencera, cependant le niveau précédent se verra perdre les champignons rendu vénéneux qui seront donc ajouté au score du joueur mais le nouveau niveau lui sera pourvu de plus de champignons que le niveau précédent. 
+Concernant le projectile que peut tirer l'auteur,comme dit plus haut, celui-ci est unique. Si le projectile tiré touche un ennemi, rentre en contact avec un ennemi alors l'ennemi meurt et le joueur gagne alors des points en fonction de l'ennemi tué. Si le joueur tue une partie du corps du centipede, celle ci se transforme alors en champignon sur la position de sa mort et rapporte au joueur 10 points. Si le joueur touche la tête du centipede alors il gagne 100 points et transforme la tête du centipede en champignon. Si le joueur tue une araignée, celui peut être récompensé en fonction des risques qu'il a pris pour tuer celle-ci, en effet, si le joueur tue l'araignée à une distance très proche de celle-ci alors il gagnera 900 points, à une distance moyenne il gagnera 600 points, et a une distance éloignée il gagnera 300 points. Le joueur peut également tué les champignons qui possède chacun, 4 points de vie, il faut donc 4 tirs de la part du joueur afin de tuer un champignon. De plus les champignons ont une certaines visées stratégiques, car l'utilisateur peut les utiliser pour diriger le centipede la ou il le veut et donc le tuer plus facilement. Le joueur peut tué le scorpion qui rend les champignons vénéneux, si le joueur y arrive alors il est récompensé par 1000 points. Le joueur peut aussi tué une puce, ce qui lui rapporte 200 points. Cette puce apparait que dans un certain cas particulier, en effet elle apparait seulement si il y a moins de 5 champignons dans la zone de déplacement du joueur elle apparaît aléatoirement en une position x et  descend jusqu'en bas du tableau, en déposant des champignons aléatoirement en y.  De plus, un scorpion apparait aléatoirement à partir d'un certain niveau et se déplace sur une ligne en rendant les champignons vénéneux. Dès lors si le centipede touche un des champignons vénéneux alors celui-ci descendra en ligne droite jusqu'à la zone du joueur. Ce qui rend le jeu encore plus difficile et hardu.
+
+\section{Conclusion}
+
+Afin de conclure, nous pouvons dire que centipede est un jeu d'une difficulté extrême, qui demande beaucoup d'entrainement  et beaucoup de réflexion. En effet, le jeu demande à l'utilisateur de comprendre les mécanismes du centipede, des ennemis et de gérer les évènements aléatoires tels que les scorpions. De plus, le jeu demande l'adoption d'une certaine stratégie si l'utilisateur veut progresser plus loin et atteindre un score vraiment élevé, en effet, il peut créer des endroits dit " safe " ou alors créer des couloirs pour pouvoir tuer aisément le centipede. En tout point, ce jeu est donc aussi complexe que Candy Crush, en effet, celui-ci demande de la réflexion afin de réaliser de meilleur score. L'utilisateur doit anticiper les déplacements des bonbons afin de créer des combinaisons a 4 ou 5 bonbons. L'utilisateur doit aussi comprendre les mécanismes du jeu dans des niveaux ou les objectifs sont d'éliminer la gélatine, ou de faire tomber des ingrédients... L'utilisateur doit constamment rechercher les meilleurs combinaisons... 
+
+Nous pouvons donc dire que ces deux jeux peuvent permettre à l'utilisateur de développer ses capacités de réflexion et d'adaptation.
+
+\end{document}
