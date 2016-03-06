@@ -21,6 +21,9 @@
 \end{itemize}
 
 \subsection{Évolution de l'état du jeu}
+
+Le jeu consiste à déplacer deux éléments pour créer des alignements d'au moins 3 cases identiques. Pour ce faire, on va procéder en plusieurs étapes :
+
 \subsubsection{Vérification du déplacement}
 Avant de pouvoir échanger deux cases, il faut vérifier plusieurs choses :
 \begin{itemize}
@@ -203,4 +206,5 @@ De plus, un score à atteindre pourra être fixé. Pour cela, chaque destruction
 scoreActuel >= scoreCible
 \end{lstlisting}
 
-Enfin, il est possible de compter le nombre de coups que le joueur a utilisé. En effet, il suffit de le faire lors de l'échangement des cases. Si cet échange est par la suite annulé, le nombre de coups sera remis à son état d'avant l'échange.
+Il est également possible de compter le nombre de coups que le joueur a utilisé. En effet, il suffit de le faire lors de l'échangement des cases. Si cet échange est par la suite annulé, le nombre de coups sera remis à son état d'avant l'échange.
+Avec ceci, on peut définir un certain nombre de vies que le joueur possède, et qu'il perd à la perte d'un niveau, quand il n'a plus de vie, il doit attendre pour pouvoir continuer à jouer.
