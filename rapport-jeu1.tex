@@ -1,6 +1,4 @@
 \subsection{État du jeu}
-
-\subsection{État du jeu}
 Nous essaierons de simplifier au plus le jeu ``Candy Crush'' par l'utilisation de structures.\smallskip
 
 Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés par certaines variables que nous présenterons ici : \\
@@ -10,8 +8,8 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
  -       \variable{numeroNiveau}{entier}{Les niveaux sont représentés par leur numéro (présent au départ)}\\
  -       \variable{deplacementMax}{entier}{Le nombre de déplacements maximum possibles selon le niveau}\\
  -       \variable{deplacementsUtilises}{entier}{Le nombre de déplacements effectués par l'utilisateur pendant la partie}\\
- -       \variable{grille}{[tailleGrilleX][tailleGrilleY]}{représente la taille de la grille en X et Y}\\
- -       \variable{grilleDeDestruction}{booleen [tailleGrilleX][tailleGrilleY]}{représente les cases où un bonbon est présent ou non (en cas de grille non uniforme) \\ex.: 0 = case non jouable \\ 1,2,3,4,5 = couleur de bonbons }
+ -       \variable{grille}{[tailleGrilleX][tailleGrilleY]}{représente la grille d'entiers avec une taille en X et Y \\0 = case non jouable \\ 1,2,3,4,5 = couleur de bonbons }\\
+ -       \variable{grilleDeDestruction}{booleen [tailleGrilleX][tailleGrilleY]}{est une seconde grille de booleens qui stocke les cases à détruire }
   \end{typeag}		\\
   
   On crée un type agrégé représentant la position en x et y afin de cibler les cases plus tard : \\
@@ -40,7 +38,7 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
   Cette structure va permettre de définir les conditions de validité d'une combinaison et si un déplacement est possible : \\
   
 \begin{typeag}[Case]
- -       \variable{caseTemporaire}{entier}{variable qui va stocker une case temporaire qui vérifier si il y a alignement ou non}\\
+ -       \variable{caseTemporaire}{entier}{variable qui va stocker une case temporaire pour pouvoir inverser deux cases}\\
  -       \variable{nbCasesAlignes}{entier}{variable qui va compter le nombre de cases alignées}
   \end{typeag}
 
@@ -51,19 +49,19 @@ Nous allons maintenant analyser la situation de départ du jeu. Dès le départ,
 
 \item
 	Tout d'abord, le décor est constitué d'une grille modulable selon le niveau, c'est à dire avec une surface différente.
-	Par exemple, on peut avoir une niveau assez simple (souvent au début) qui a une seule grille rectangulaire ou dans des niveaux plus complexes, plusieurs grilles avec des formes 				différentes.
+	Par exemple, on peut avoir une niveau assez simple (souvent au début) qui a une seule grille rectangulaire ou dans des niveaux plus complexes, plusieurs grilles avec des formes différentes.
 \item
 	Les bonbons qui constituent le jeu ont des couleurs qui va permettent de faire des combinaisons.
 	Couleurs : jaune, rouge, vert, bleu et orange.
 \item
-	À l'écran sera affiché le nombre de coups et/ou le temps limité afin de réussir le niveau
+	À l'écran sera affiché le nombre de coups limite afin de réussir le niveau % On a enlevé le temps, je crois
 \item
 	Le joueur dispose aussi d'une jauge de points qui augmente au fur et à mesure des combinaisons.
 	Évidemment, le score est 0 au départ.
 \item
 	Le joueur a aussi directement accès à son objectif à réaliser pour passer le niveau et son avancement dans celui-ci.
 \item 
-	Pour que le jeu soit viable, il faut tout d'abord qu'il n'y ait pas de combinaisons directes au départ (\emph{ex.: 3 bonbons alignés dès le début}) mais aussi qu'il y ait au moins une solution 			possible si on déplace un bonbon d'une case.
+ 	Pour que le jeu soit viable, il faut qu'il n'y ait pas de combinaisons directes au départ (\emph{ex.: 3 bonbons alignés dès le début}). % mais aussi qu'il y ait au moins une solution possible si on déplace un bonbon d'une case. --> Un peu difficile pour l'analyse...
 	
 \end{itemize}
 
@@ -255,6 +253,7 @@ scoreActuel >= scoreCible
 
 Il est également possible de compter le nombre de coups que le joueur a utilisé. En effet, il suffit de le faire lors de l'échangement des cases. Si cet échange est par la suite annulé, le nombre de coups sera remis à son état d'avant l'échange.
 Avec ceci, on peut définir un certain nombre de vies que le joueur possède, et qu'il perd à la perte d'un niveau, quand il n'a plus de vie, il doit attendre pour pouvoir continuer à jouer.
+Enfin, lors du premier remplissage de la grille (un nombre aléatoire dans chaque case), il faudra éliminer toutes le combinaisons, c'est à dire lancer le processus Détection-Destruction-Remplacement autant de fois qu'il le faudra.
 
 \subsection{Annexe}
 Dans cette partie, nous ajouterons les analyses que nous avons pu faire sur \emph{Candy Crush} mais qui sont difficilement réalisables.
