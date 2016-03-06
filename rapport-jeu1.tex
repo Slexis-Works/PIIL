@@ -1,23 +1,70 @@
 \subsection{État du jeu}
 
+\subsection{État du jeu}
+Nous essaierons de simplifier au plus le jeu ``Candy Crush'' par l'utilisation de structures.\smallskip
+
+Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés par certaines variables que nous présenterons ici : \\
+
+
+\begin{typeag}[Niveau]
+ -       \variable{numeroNiveau}{entier}{Les niveaux sont représentés par leur numéro (présent au départ)}\\
+ -       \variable{deplacementMax}{entier}{Le nombre de déplacements maximum possibles selon le niveau}\\
+ -       \variable{deplacementsUtilises}{entier}{Le nombre de déplacements effectués par l'utilisateur pendant la partie}\\
+ -       \variable{grille}{[tailleGrilleX][tailleGrilleY]}{représente la taille de la grille en X et Y}\\
+ -       \variable{grilleDeDestruction}{booleen [tailleGrilleX][tailleGrilleY]}{représente les cases où un bonbon est présent ou non (en cas de grille non uniforme) \\ex.: 0 = case non jouable \\ 1,2,3,4,5 = couleur de bonbons }
+  \end{typeag}		\\
+  
+  On crée un type agrégé représentant la position en x et y afin de cibler les cases plus tard : \\
+  
+  \begin{typeag}[Position]
+ -       \variable{x}{entier}{position en x}\\
+ -       \variable{y}{entier}{position en y}
+  \end{typeag}	\\
+  
+  Le joueur va interagir avec le jeu en déplaçant les cases afin de créer des combinaision de couleurs.
+  Ainsi, on crée une structure qui cible la case initiale et la case cible par leur position : \\
+  
+  \begin{typeag}[Joueur]
+ -       \variable{caseADeplacer}{Position}{représente la position en x et y de la case que l'on souhaite déplacer}\\
+ -       \variable{caseCible}{Position}{représente la position en x et y de la case que l'on cible}
+  \end{typeag}	\\
+  
+  La récompense du jeu se traduit par un score à obtenir afin de passe un niveau par exemple.
+  Il nous faut donc une structure qui stocke le score que l'on doit obtenir pour gagner et aussi qui stocke le score actuel du joueur : \\
+  
+  \begin{typeag}[Score]
+ -       \variable{scoreCible}{entier}{score à atteindre (présent au départ)}\\
+ -       \variable{scoreActuel}{entier}{stockage du score après chaque coup du joueur}
+  \end{typeag}	\\
+  
+  Cette structure va permettre de définir les conditions de validité d'une combinaison et si un déplacement est possible : \\
+  
+\begin{typeag}[Case]
+ -       \variable{caseTemporaire}{entier}{variable qui va stocker une case temporaire qui vérifier si il y a alignement ou non}\\
+ -       \variable{nbCasesAlignes}{entier}{variable qui va compter le nombre de cases alignées}
+  \end{typeag}
+
 \subsection{Configuration initiale du jeu}
+Nous allons maintenant analyser la situation de départ du jeu. Dès le départ, le joueur dispose d'un certain nombre d'éléments : \\
+
 \begin{itemize}
-        \item 
-        Grille modulable selon le niveau (surface différente)
-        \item 
-        Bonbons de couleurs (jaune rouge vert bleu orange)
-        \item 
-        Bonbons spéciaux (explosion horizontale/verticale, poisson, bombe multicolore, bombe à retardement, bombe colorante)
-        \item 
-        bloqueurs (bloque présence bonbon, bloque le bonbon)
-        \item 
-        Nombre de coups pour réussir / temps
-        \item 
-        Score
-        \item 
-        Jauge à remplir pour les étoiles
-        \item 
-        Objectif à réaliser
+
+\item
+	Tout d'abord, le décor est constitué d'une grille modulable selon le niveau, c'est à dire avec une surface différente.
+	Par exemple, on peut avoir une niveau assez simple (souvent au début) qui a une seule grille rectangulaire ou dans des niveaux plus complexes, plusieurs grilles avec des formes 				différentes.
+\item
+	Les bonbons qui constituent le jeu ont des couleurs qui va permettent de faire des combinaisons.
+	Couleurs : jaune, rouge, vert, bleu et orange.
+\item
+	À l'écran sera affiché le nombre de coups et/ou le temps limité afin de réussir le niveau
+\item
+	Le joueur dispose aussi d'une jauge de points qui augmente au fur et à mesure des combinaisons.
+	Évidemment, le score est 0 au départ.
+\item
+	Le joueur a aussi directement accès à son objectif à réaliser pour passer le niveau et son avancement dans celui-ci.
+\item 
+	Pour que le jeu soit viable, il faut tout d'abord qu'il n'y ait pas de combinaisons directes au départ (\emph{ex.: 3 bonbons alignés dès le début}) mais aussi qu'il y ait au moins une solution 			possible si on déplace un bonbon d'une case.
+	
 \end{itemize}
 
 \subsection{Évolution de l'état du jeu}
@@ -208,3 +255,28 @@ scoreActuel >= scoreCible
 
 Il est également possible de compter le nombre de coups que le joueur a utilisé. En effet, il suffit de le faire lors de l'échangement des cases. Si cet échange est par la suite annulé, le nombre de coups sera remis à son état d'avant l'échange.
 Avec ceci, on peut définir un certain nombre de vies que le joueur possède, et qu'il perd à la perte d'un niveau, quand il n'a plus de vie, il doit attendre pour pouvoir continuer à jouer.
+
+\subsection{Annexe}
+Dans cette partie, nous ajouterons les analyses que nous avons pu faire sur \emph{Candy Crush} mais qui sont difficilement réalisables.
+On peut compter parmi celles-ci les bonus qui s'obtiennent par certaines combinaisons de bonbons.
+\begin{itemize}
+
+\item
+	Combinaison de 4 bonbons = un bonbon spécial qui détruit une ligne ou une colonne entière (selon le sens de ses rayures)
+
+\item
+	Combinaison de 5 bonbons = bombe multicolore (l'associer avec un autre bonbon détruit tout les bonbons du type associé présents dans la grille)
+\item
+	Bonbons spéciaux qui détruisent tout les bonbons autour d'eux : quand on fait deux combinaisons de 3 (en L)
+\item
+	Bonbons à retardement : vont exploser et détruire les bonbons autour d'eux 
+\item
+	Association de deux bonbons spéciaux pour un plus gros (détruit 3 lignes et 3 colonnes)      
+\item
+	Combos : une combinaison en entraîne d'autres (ajout de points)
+\item
+	Une combinaison détruit les bonbons et d'autres les remplacent (tombent du dessus) 
+\item
+	Destruction automatique des bonbons spéciaux à la fin du niveau
+
+\end{itemize}
