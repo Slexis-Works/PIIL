@@ -75,66 +75,106 @@ Ensuite à chaque début de partie, le joueur à devant lui, sur la \emph{zone d
 	\item le centipède, composé de 12 \texttt{Segment}. Cependant, le nombre de centipèdes sera égal au numéro du niveau, avec pour maximum 12. On aura \texttt{jardin.niveau-1} têtes seules et les segments restants formeront un seul centipède. Les centipèdes arrivent dans la partie depuis le haut de l'écran, et au milieu de celui-ci, sans pour autant être collés.
 \end{itemize}
  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Évolution de l'état du jeu}
 
-Dans cette partie nous allons étudier les points d'interaction du jeu avec le joueur, leurs conséquences sur le jeu ainsi que l'évolution automatique de l'état du jeu. La partie dure tant que \texttt{joueur.vies > 0}. Si cette condition n'est plus respectée, on retourne à l'écran titre d'où on peut relancer une partie.
+Dans cette partie nous allons étudier les points d'interaction du jeu avec le joueur, leurs conséquences sur le jeu ainsi que l'évolution automatique de l'état du jeu. La partie dure tant que \texttt{joueur.vies > 0}. Si cette condition n'est plus respectée, on retourne à l'écran titre d'où on peut relancer une partie. Sinon, on vérifie les entrées, fait avancer le jeu comme décrit en partie, et affiche le résultat à l'écran.
 
 \subsubsection{Commandes de l'utilisateur}
-Dans un premier temps, le joueur peut se déplacer soit grâce aux flèches du clavier, soit avec la souris.
-\begin{lstlisting}
-	// Determination du mouvement a faire
-	int prochainX = joueur.positionX;
-	int prochainY = joueur.positionY;
-	if ( sourisABouge ) {
-		// On pourra restreindre la vitesse par trigonometrie
-		prochainX = curseurX;
-		prochainY = curseurY;
-	} else {
-		if ( appuiDroite )
-			prochainX = prochainX + joueur.vitesse;
-		if ( appuiGauche )
-			prochainX = prochainX - joueur.vitesse;
-		// De meme pour Y avec appuiBas et appuiHaut
-	}
-\end{lstlisting}
+Dans un premier temps, le joueur peut se déplacer soit grâce aux flèches du clavier, soit avec la souris. On pourra effectuer la séquence suivante :
+\begin{algoinfo}
+	\item Déclarer les entiers \texttt{prochainX} et \texttt{prochainY}
+	\item Si la souris a bougé
+	\begin{itemize}
+		\item Déterminer l'angle du déplacement par rapport au joueur
+		\item Affecter des valeurs à \texttt{prochainX} et \texttt{prochainY} limitées par la vitesse du joueur mais respectant la direction choisie
+	\end{itemize}
+	\item Sinon
+	\begin{itemize}
+		\item \texttt{prochainX} et \texttt{prochainY} valent d'abord la position actuelle du joueur
+		\item Si la flèche de droite est appuyée, on rajoute la vitesse du joueur (déplacement en pixels/frame) à \texttt{prochainX}
+		\item Si la flèche de gauche est appuyée, on soustrait la vitesse du joueur à \texttt{prochainX}
+		\item De même pour l'axe Y avec bas et haut
+	\end{itemize}
+\end{algoinfo}
+
+%\begin{lstlisting}
+	%// Determination du mouvement a faire
+	%int prochainX = joueur.positionX;
+	%int prochainY = joueur.positionY;
+	%if ( sourisABouge ) {
+		%// On pourra restreindre la vitesse par trigonometrie
+		%prochainX = curseurX;
+		%prochainY = curseurY;
+	%} else {
+		%if ( appuiDroite )
+			%prochainX = prochainX + joueur.vitesse;
+		%if ( appuiGauche )
+			%prochainX = prochainX - joueur.vitesse;
+		%// De meme pour Y avec appuiBas et appuiHaut
+	%}
+%\end{lstlisting}
 
 Cependant, les mouvements sont restreints dans une zone particulière en bas de l'écran. À cela se rajoutent les collisions avec les champignons, puisqu'on ne peut pas aller dessus. Ainsi le déplacement pourrait s'implémenter ainsi :
-\begin{lstlisting}
-	if ( prochainX > joueur.positionX ) {
-		// Deplacement vers la droite
-		if ( prochainX > LARGEUR_ECRAN - LARGEUR_JOUEUR ) {
-			joueur.position.X = LARGEUR_ECRAN - LARGEUR_JOUEUR;
-		} else {
-			int champi = 0, bloqueur = -1;
-			while ( bloqueur == -1 && champi < jardin.champis.length ) {
-				// Cherche-t-on a traverser un champignon ?
-				if ( joueur.positionX + LARGEUR_JOUEUR <= jardin.champis[champi].positionX
-					&& prochainX + LARGEUR_JOUEUR > jardin.champis[champi].positionX
-					&& prochainY + HAUTEUR_JOUEUR > jardin.champis[champi].positionY
-					&& prochainY < jardin.champis[champi].positionY + HAUTEUR_CHAMPIGNON ) {
-					bloqueur = i;
-				}
-				champi = champi + 1.
-			}
-			if (bloqueur == -1)
-				joueur.positionX = prochainX;
-			else
-				joueur.positionX = jardin.champis[bloqueur].positionX - LARGEUR_JOUEUR;
-		}
-	}
-	// Similaire pour prochainX < joueur.positionX et pour l'axe Y
-	// On ne fait rien si prochainX == joueur.positionX
-\end{lstlisting}
+
+\begin{algoinfo}
+	\item Si le joueur risque de sortir de sa zone de déplacement
+	\begin{itemize}
+		\item Alors le coller au bord de la zone
+	\end{itemize}
+	\item Sinon
+	\begin{itemize}
+		\item Pour chaque champignon du terrain :
+		\begin{itemize}
+			\item Si le joueur va vouloir traverser ce champignon, le restreindre dans son mouvement
+		\end{itemize}
+		\item Si aucun champignon ne l'a gêné, le faire aller où il veut
+	\end{itemize}
+\end{algoinfo}
+
+%\begin{lstlisting}
+	%if ( prochainX > joueur.positionX ) {
+		%// Deplacement vers la droite
+		%if ( prochainX > LARGEUR_ECRAN - LARGEUR_JOUEUR ) {
+			%joueur.position.X = LARGEUR_ECRAN - LARGEUR_JOUEUR;
+		%} else {
+			%int champi = 0, bloqueur = -1;
+			%while ( bloqueur == -1 && champi < jardin.champis.length ) {
+				%// Cherche-t-on a traverser un champignon ?
+				%if ( joueur.positionX + LARGEUR_JOUEUR <= jardin.champis[champi].positionX
+					%&& prochainX + LARGEUR_JOUEUR > jardin.champis[champi].positionX
+					%&& prochainY + HAUTEUR_JOUEUR > jardin.champis[champi].positionY
+					%&& prochainY < jardin.champis[champi].positionY + HAUTEUR_CHAMPIGNON ) {
+					%bloqueur = i;
+				%}
+				%champi = champi + 1.
+			%}
+			%if (bloqueur == -1)
+				%joueur.positionX = prochainX;
+			%else
+				%joueur.positionX = jardin.champis[bloqueur].positionX - LARGEUR_JOUEUR;
+		%}
+	%}
+	%// Similaire pour prochainX < joueur.positionX et pour l'axe Y
+	%// On ne fait rien si prochainX == joueur.positionX
+%\end{lstlisting}
 
 De plus, le joueur afin de se défendre des ennemis a la possibilité de tirer un projectile avec la touche espace ou le clic gauche de la souris si le projectile n'est pas à l'écran.
-\begin{lstlisting}
-	if ( (appuiEspace || clicGauche) && !jardin.tir.actif ) {
-		jardin.tir.actif = true;
-		jardin.tir.positionX = joueur.positionX + (LARGEUR_JOUEUR - LARGEUR_TIR)/2;
-		jardin.tir.positionY = joueur.positionY;
-	}
-\end{lstlisting}
+\begin{algoinfo}
+	\item Si le joueur appuie sur une touche de tir ou sur sa souris
+	\begin{itemize}
+		\item Si le projectile n'est pas actif, alors replacer le tir au centre du joueur et l'activer
+	\end{itemize}
+\end{algoinfo}
+
+%\begin{lstlisting}
+	%if ( (appuiEspace || clicGauche) && !jardin.tir.actif ) {
+		%jardin.tir.actif = true;
+		%jardin.tir.positionX = joueur.positionX + (LARGEUR_JOUEUR - LARGEUR_TIR)/2;
+		%jardin.tir.positionY = joueur.positionY;
+	%}
+%\end{lstlisting}
 
 Cependant le joueur peut tout de même, afin de se défendre, éviter l'ennemi mais en aucun cas, le joueur ne pourra gagner s'il ne tire pas et ne détruit pas l'ennemi. Si l'on ne fait qu'esquiver, la partie sera infinie, le joueur restant toujours bloqué au même niveau. De plus, si le joueur rentre en contact avec un des ennemis, alors le joueur perdra une vie. Un bonus sera ensuite attribué en fonction des champignons sur le plateau (5 pour chaque vénéneux ou abîmé), les champignons vénéneux redeviendront sains et 5 champignons sains supplémentaires apparaîtront. Si le joueur possède encore une vie après cela, alors le niveau recommencera. 
 
