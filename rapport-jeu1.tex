@@ -27,7 +27,7 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
  -       \variable{caseCible}{Position}{représente la position en x et y de la case que l'on cible}
   \end{typeag}	\\
   
-  La récompense du jeu se traduit par un score à obtenir afin de passe un niveau par exemple.
+  La récompense du jeu se traduit par un score à obtenir afin de passer un niveau par exemple.
   Il nous faut donc une structure qui stocke le score que l'on doit obtenir pour gagner et aussi qui stocke le score actuel du joueur : \\
   
   \begin{typeag}[Score]
@@ -97,7 +97,7 @@ grille[caseADeplacer.x][caseADeplacer.y] = caseTemporaire;
 		On peut alors commencer la détection des cases à détruire. Si il n'y a aucune case à détruire (lors de la première fois qu'on cherche), il n'y a donc pas de combinaison, on peut alors rééchanger les cases.
 \end{itemize}
 
-\begin{figure}[position]
+\begin{figure}[h]
 	\center
 	\caption{\label{verifDepl} Déplacements}
 	\includegraphics{imgs/verifDepl}
@@ -109,7 +109,7 @@ Pour pouvoir détecter toutes les cases à détruire, nous utilisons une autre g
 
 On va ensuite parcourir la première grille ligne par ligne pour marquer tous les alignements horizontaux puis colonne par colonne pour les combinaisons verticales.
 
-\begin{figure}[position]
+\begin{figure}[h]
 	\center
 	\caption{\label{Detection} Détection}
 	\includegraphics{imgs/Detection}
@@ -117,57 +117,46 @@ On va ensuite parcourir la première grille ligne par ligne pour marquer tous le
 
 Nous avons besoin de quelques nouvelles variables :
 
-\begin{lstlisting}
-int couleurTemp; // Couleur temporaire qui va servir pour verifier que plusieurs cases sont identiques
-int nbCasesAlignees; // Sert a compter le nombre de cases alignees
-\end{lstlisting}
+\begin{itemize}
+\item
+	couleurTemp, qui contient le numéro de couleur temporaire qui va servir pour verifier que plusieurs cases sont identiques;
+\item
+	nbCasesAlignees, qui sert a compter le nombre de cases alignees.
+\end{itemize}
 
-Pour parcourir la grille :
-
+Après avoir initialisé les variables (à faire au début de chaque ligne, quand on parcours ligne par ligne, et au début de chaque colonne lorsqu'on parcoure colonne par colonne)
+en mettant couleurTemp à la couleur de la première case de la ligne (respectivement de la colonne) et nbCasesAlignees à 1,
+on va tester plusieurs choses :
+\begin{itemize}
+\item
+	Si la couleur de la case visitée actuellement est la même que notre variable couleurTemp, on augmente nbCasesAlignees pour pouvoir compter le nombre de cases identiques à la suite.
+\item
+	Si la couleur est différente mais la variable nbCasesAlignées est supérieure ou égale à trois, ça signifie qu'il y a un alignement de au moins trois cases juste avant la case actuelle (non incluse).
+	Dans ce cas, on va noter ces cases dans la seconde grille (avec i le numéro de colonne et j le numéro de ligne de la case en cours) :
 \begin{lstlisting}
-for(int j = 0; j < tailleGrilleY; j++)
-{
-	couleurTemp = grille[0][j]; // La couleur temporaire est egale a la premiere case de la grille
-	nbCasesAlignees = 1; // Le nombre de cases alignees est egal a 1 en debut de ligne
-	/** Parcours des lignes **/
-	for(int i = 0; i < tailleGrilleX; i++)
-	{
-		if(couleurTemp == grille[i][j]) // Si la couleur temporaire est la meme dans cette case, on incremente nbCasesAlignees
-			nbCasesAlignees++;
-		else if(nbCasesAlignees >= 3)
-		{
-			// Si la couleur n'est pas la meme mais qu'on a un alignement, on note dans le deuxieme tableau
-			nbCasesAlignees = 1;
-			couleurTemp = grille[i][j];
-			pasDeCasesADetruire = false;
-		}
-		else
-		{
-			nbCasesAlignees = 1;
-			couleurTemp = grille[i][j];
-		}
-
-		if(i == tailleGrilleX - 1 && nbCasesAlignees >= 3) 
-			/* Si on atteind le bord de la grille et qu'on a un alignement de plus de 3,
-			on note dans le tableau apres avoir incremente i, pour utiliser la meme fonction de notation dans l'autre tableau. */
-	}
-} 
-\end{lstlisting}
-		Pour noter les cases à détruire dans la seconde grille, on peut simplement faire :
-\begin{lstlisting}
-for(int k = i - nbCasesAlignees; k < i; k++) // On parcours les cases a noter, mais on ne passe pas quand k == i car la case i ne fait pas partie de l'alignement
+for(int k = i - nbCasesAlignees; k < i; k++)
 {
 	grilleDeDestruction[k][j] = true;
 }
 \end{lstlisting}
-
-Il faudra refaire ce processus de détection des alignements verticalement, donc colonne par colonne. Le principe est identique.
+Il faudra également réinitialiser la couleur temporaire à la case actuelle et le compte des cases alignées à 1.
+\item
+	Si la couleur est différente, mais que nbCasesAlignees est inférieure à trois, c'est qu'aucun alignement n'était présent, on se contente donc de réinitialiser les variables (comme ci-dessus).
+\item
+	Enfin, il faut tester les alignements quand on est en fin de ligne (respectivement de colonne) : en effet, étant donné que les tests s'effectuent à la case suivant la fin de l'alignement, il faut en rajouter si
+	l'on ne veut pas que les alignements au bord de grille soient oubliés.
+	La condition ressemblera à ceci :
+\begin{lstlisting}
+if(i == tailleGrilleX - 1 && nbCasesAlignees >= 3)
+\end{lstlisting}
+	Afin d'utiliser la même fonction que celle qu'on utilisera pour noter les cases dans la seconde grille, on incrémentera i.
+\end{itemize}
 
 \subsubsection{Destruction}
 
 Pour détruire les cases, nous remplaçons les cases à détruire par -1 dans la grille.
 
-\begin{figure}[position]
+\begin{figure}[h]
 	\center
 	\caption{\label{Destruction} Destruction}
 	\includegraphics{imgs/Destruction}
@@ -183,11 +172,13 @@ for(int j = 0; j < tailleGrilleY; j++)
 		if(grilleDeDestruction[i][j] == true)
 		{
 			grille[i][j] = -1;
-			grilleDeDestruction[i][j] = false; // On en profite pour reinitialiser la deuxieme grille qui sert pour la destruction
+			grilleDeDestruction[i][j] = false;
 		}
 	}
 }
 \end{lstlisting}
+
+Après ça, la seconde grille aura retrouvé son état d'origine, c'est-à-dire avec des 'false' à chaque case.
 
 \subsubsection{Remplacement}
 
@@ -196,40 +187,36 @@ for(int j = 0; j < tailleGrilleY; j++)
 	
 	Nous allons donc parcourir chaque colonne en partant du bas, et lorsqu'on trouve un -1, nous allons le remplacer par la prochaine case valide (qu'on mettra à -1).
 	
-\begin{figure}[position]
+\begin{figure}[h]
 	\center
 	\caption{\label{Remplacement} Remplacement}
 	\includegraphics{imgs/Remplacement1}
 	\includegraphics{imgs/Remplacement2}
 \end{figure}
 	
-	Pour une colonne k, nous aurons :
+	Nous ajoutons deux variables : j qui servira à parcourir les cases à partir de celle où le programme se situe, et continuer qui est un boolen pour quitter la boucle en temps voulu.
+	Pour une colonne k et une ligne i, nous aurons :
 \begin{lstlisting}
-int j;
-boolean continuer;
-for(int i = tailleGrilleY - 1; i >= 0; i--)
-{
-	if(grille[k][j] == -1)
+if(grille[k][j] == -1) {
+	j = i;
+	continuer = true;
+	while(j >= 0 && continuer == true)
 	{
-		j = i;
-		continuer = true;
-		while(j >= 0 && continuer == true)
+		j--;
+		if(grille[k][j] != 0 && grille[k][j] != -1)
 		{
-			j--;
-			if(grille[k][j] != 0 && grille[k][j] != -1) // Si on trouve une case correcte, on remplace
-			{
-				grille[k][i] = grille[k][j];
-				grille[k][j] = -1;
-				continuer = false; // On n'a plus besoin de rechercher
-			}
+			grille[k][i] = grille[k][j];
+			grille[k][j] = -1;
+			continuer = false;
 		}
 	}
 }
 \end{lstlisting}
 
-	Il faudra faire une boucle pour répliquer ce résonnement à chaque colonne. Notons qu'on pourrais ajouter une condition qui arrêterais la boucle la première fois que le while ne trouve pas de case valide.
+	Ce comportement devra être effectué dans chaque case du tableau. Notons qu'on pourrais ajouter une condition qui arrêterais la boucle la première fois que le while ne trouve pas de case valide.
 	
-	Désormais, il ne reste plus qu'à remplacer toutes les cases -1 par un numéro aléatoire 1, 2, 3, 4 ou 5 représentant les différents types de cases.
+	Désormais, il ne reste plus qu'à remplacer toutes les cases -1 par un numéro aléatoire 1, 2, 3, 4 ou 5 représentant les différents types de cases, ce qui n'est pas compliqué car 
+il suffit de parcourir chaque case de la grille et d'y insérer un entier aléatoire compris entre 1 et 5.
 
 \begin{lstlisting}
 for(int j = 0; j < tailleGrilleY; j++)
