@@ -9,13 +9,29 @@
 				\variable{positionY}{entier}\\
 				\variable{vitesse}{entier*}
 			\end{typeag}
+			\begin{typeag}{Champignon}
+				\variable{vie}{Champignon[nb[max]}\\
+				\variable{estVénéneux}{booléen}\\
+				\variable{positionX}{entier}
+				\variable{positionY}{entier}
+
+			\end{typeag}
 			
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{typeag}{Poule}
-				\variable{vies}{entier*}\\
-				\variable{positionX}{entier ou réel}\\
-				\variable{positionY}{entier ou réel}
+			\begin{typeag}{Zone de jeu}
+				\variablei{champis}{Champignon[nb[max]}\\
+				\variablei{tir}{Projectile}\\
+				\variablei{couleurs}{entier}
+				\variablei{score}{entier}
+				\variablei{niveau}{entier}
+			\end{typeag}
+			\begin{typeag}{Segment}
+				\variable{etat}{entier}\\
+				\variable{vitesse}{entier}\\
+				\variable{direction}{entier}
+				\variable{positionX}{entier}
+				\variable{positionY}{entier}
 			\end{typeag}
 		\end{column}
 	\end{columns}
@@ -23,10 +39,18 @@
 
 \subsection{Configuration initiale du jeu}
 \begin{frame}{Configuration initiale du jeu}
-	\begin{typeag}{Personnage}
-		\variablei{vies}{2}\\
+	\begin{typeag}{Projectile}
+		\variablei{actif}{2}\\
+		\variable{vitesse}{entier}
 		\variablei{positionX}{largeurEcran/2}\\
 		\variablei{positionY}{hauteurEcran-hauteurPersonnage}
+	\end{typeag}
+	\begin{typeag}{Ennemi}
+		\variablei{type}{entier}\\
+		\variablei{vitesse}{entier}
+		\variablei{direction}{entier}
+		\variablei{positionX}{entier ou réel}\\
+		\variablei{positionY}{entier ou réel}
 	\end{typeag}
 \end{frame}
 
