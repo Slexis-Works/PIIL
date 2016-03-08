@@ -31,13 +31,51 @@
 \end{frame}
 
 \subsection{Évolution de l'état du jeu}
-\begin{frame}[fragile]{Boucle principale}
-	\begin{lstlisting}
-		while ( personnage.vies > 0 ) {
-			// Recuperation des entrees
-			// Traitement
-			// Affichage a l'ecran
-		}
-	\end{lstlisting}
-
+\begin{frame}{Entrées du joueur}
+	\begin{columns}
+		\begin{column}{0.4\textwidth}
+			\begin{block}{Déplacement}
+				Restreint :
+				
+				\smallskip
+				\includegraphics[width=\textwidth]{imgs/collisionChampignon.png}
+			\end{block}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{block}{Tir}
+				Unique et libre :
+				
+				\smallskip
+				\includegraphics[width=\textwidth]{imgs/tirEtDeplacement.png}
+			\end{block}
+		\end{column}
+	\end{columns}
+\end{frame}
+\begin{frame}{Évolution des éléments}
+	\begin{columns}
+		\begin{column}{0.3\textwidth}
+			\begin{block}{Mort du joueur}
+				Instantanée pour tout ennemi :
+				
+				\smallskip
+				\includegraphics[width=\textwidth]{imgs/mortNain.png}
+			\end{block}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\begin{block}{Tir/Ennemi}
+				Destruction instantanée :
+				
+				\smallskip
+				\includegraphics[width=\textwidth]{imgs/destructionSegment.png}
+			\end{block}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\begin{block}{Champignons}
+				Destructibles mais gênants pour le joueur et le centipède :
+				
+				\smallskip
+				\includegraphics[width=\textwidth]{imgs/champignonsEtCentipede.png}
+			\end{block}
+		\end{column}
+	\end{columns}
 \end{frame}
