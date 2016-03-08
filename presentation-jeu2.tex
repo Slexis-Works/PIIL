@@ -10,48 +10,55 @@
 				\variable{vitesse}{entier*}
 			\end{typeag}
 			\begin{typeag}{Champignon}
-				\variable{vie}{Champignon[nb[max]}\\
-				\variable{estVénéneux}{booléen}\\
-				\variable{positionX}{entier}
+				\variable{vie}{entier}\\
+				\variable{estVeneneux}{booléen}\\
+				\variable{positionX}{entier}\\
 				\variable{positionY}{entier}
 
 			\end{typeag}
-			
+			\begin{typeag}{Projectile}
+					\variable{actif}{booléen}\\
+					\variable{vitesse}{entier}\\
+					\variable{positionX}{entier ou réel}\\
+					\variable{positionY}{entier ou réel}
+			\end{typeag}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{typeag}{Zone de jeu}
-				\variablei{champis}{Champignon[nb[max]}\\
-				\variablei{tir}{Projectile}\\
-				\variablei{couleurs}{entier}
-				\variablei{score}{entier}
-				\variablei{niveau}{entier}
+				\variable{champis}{Champignon[nbMax]}\\
+				\variable{tir}{Projectile}\\
+				\variable{couleurs}{entier}\\
+				\variable{score}{entier}\\
+				\variable{niveau}{entier}
 			\end{typeag}
 			\begin{typeag}{Segment}
 				\variable{etat}{entier}\\
 				\variable{vitesse}{entier}\\
-				\variable{direction}{entier}
-				\variable{positionX}{entier}
+				\variable{direction}{entier}\\
+				\variable{positionX}{entier}\\
 				\variable{positionY}{entier}
 			\end{typeag}
+			\variable{centipede}{Segment[12]}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \subsection{Configuration initiale du jeu}
 \begin{frame}{Configuration initiale du jeu}
-	\begin{typeag}{Projectile}
-		\variablei{actif}{2}\\
-		\variable{vitesse}{entier}
-		\variablei{positionX}{largeurEcran/2}\\
-		\variablei{positionY}{hauteurEcran-hauteurPersonnage}
+	\begin{typeag}{Personnage}
+		\variablei{vies}{\texttt{2}}\\
+		\variablei{positionX}{\texttt{largeurEcran/2}}\\
+		\variablei{positionY}{\texttt{hauteurEcran-hauteurPersonnage}}\\
+		\variablei{vitesse}{1 pixel par frame}\\
 	\end{typeag}
-	\begin{typeag}{Ennemi}
-		\variablei{type}{entier}\\
-		\variablei{vitesse}{entier}
-		\variablei{direction}{entier}
-		\variablei{positionX}{entier ou réel}\\
-		\variablei{positionY}{entier ou réel}
+	\begin{typeag}{Zone de jeu}
+		\variablei{champis}{rempli par des champignons dispersés}\\
+		\variablei{tir}{projectile inactif}\\
+		\variablei{couleurs}{\texttt{0}}\\
+		\variablei{score}{\texttt{0}}\\
+		\variablei{niveau}{\texttt{1}}
 	\end{typeag}
+	\variablei{centipede}{jardin.niveau têtes puis des segments}
 \end{frame}
 
 \subsection{Évolution de l'état du jeu}
