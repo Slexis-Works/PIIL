@@ -64,9 +64,9 @@ Néanmoins le joueur ne doit pas vaincre uniquement le centipède, d'autres enne
 Dans cette seconde partie nous allons traiter la situation de départ du jeu. Dès le lancement du jeu, le joueur dispose d'un certain nombre d'éléments : 
 
 \begin{itemize}
-	\item Le joueur dispose d'un compteur de points : son score qui se situe en haut à gauche de son écran de jeu. Celui-ci est au départ égal à 0.
+	\item Le joueur dispose d'un compteur de points : son score qui se situe en haut à gauche de son écran de jeu. Il est initialement à 0.
 	\item Le joueur peut également visualiser son score « record » en haut au milieu de son écran de jeu. De cette manière il sait quel score il doit atteindre pour s'améliorer.
-	\item Le joueur peut également visualiser le nombre de vies qu'il possède et qu'il lui reste à utiliser. Celle-ci sont représentées par une tête de lutin et sont situées à droite du score du joueur.
+	\item Le joueur peut également visualiser le nombre de vies qu'il possède et qu'il lui reste à utiliser. Celles-ci sont représentées par une tête de lutin et sont situées à droite du score du joueur. On démarre avec 2 vies.
 \end{itemize}
 
 Ensuite à chaque début de partie, le joueur à devant lui, sur la \emph{zone de jeu} : 
@@ -122,16 +122,13 @@ Cependant, les mouvements sont restreints dans une zone particulière en bas de 
 \begin{algoinfo}
 	\item Si le joueur risque de sortir de sa zone de déplacement
 	\begin{itemize}
-		\item Alors le coller au bord de la zone
+		\item Modifier sa destination de sorte à le coller au bord de la zone
 	\end{itemize}
-	\item Sinon
+	\item Ensuite, pour chaque champignon du terrain :
 	\begin{itemize}
-		\item Pour chaque champignon du terrain :
-		\begin{itemize}
-			\item Si le joueur va vouloir traverser ce champignon, le restreindre dans son mouvement
-		\end{itemize}
-		\item Si aucun champignon ne l'a gêné, le faire aller où il veut
+		\item Si le joueur va vouloir traverser ce champignon, altérer sa destination pour rendre le déplacement plus réaliste
 	\end{itemize}
+	\item Placer le joueur à sa destination
 \end{algoinfo}
 
 %\begin{lstlisting}
@@ -183,6 +180,16 @@ Cependant le joueur peut tout de même, afin de se défendre, éviter l'ennemi m
 
 Il y a beaucoup de collisions qui sont tout le temps vérifiées, sans que le joueur ne puisse agir dessus autrement qu'en déplaçant son personnage. On a déjà étudié la collision entre le joueur et son environnement. Passons maintenant à son projectile.
 
-Si le projectile tiré rentre en contact avec un ennemi, alors l'ennemi meurt et le joueur gagne des points en fonction de l'ennemi tué, selon un barème très précis.
+Si le projectile tiré rentre en contact avec un ennemi, alors l'ennemi meurt et le joueur gagne des points en fonction de l'ennemi tué, selon un barème très précis, détaillé dans le tableau de la figure \ref{fig:ScoresCenti}. On remarque que détruire le segment d'un centipède fait apparaître une champignon le plus près possible de sa position. Par ailleurs, le score attribué par l'élimination de l'araignée dépend de la distance avec 3 valeurs possibles.
 
-Si le joueur tue une partie du corps du centipède, celle-ci se transforme alors en champignon sur la position de sa mort et rapporte au joueur 10 points. Si le joueur touche la tête du centipède alors il gagne 100 points et transforme la tête du centipède en champignon. Si le joueur tue une araignée, celui-ci peut être récompensé en fonction des risques qu'il a pris pour tuer celle-ci. En effet, si le joueur tue l'araignée à une distance très proche de celle-ci alors il gagnera 900 points, à une distance moyenne il gagnera 600 points, et a une distance éloignée il gagnera 300 points. Le joueur peut également tuer les champignons qui possèdent chacun 4 points de vie. Il faut donc 4 tirs de la part du joueur afin de détruire un champignon. De plus les champignons ont une certaines visées stratégiques, car l'utilisateur peut les utiliser pour diriger le centipède là où il le veut et donc le tuer plus facilement. Le joueur peut tuer le scorpion qui rend les champignons vénéneux. Si le joueur y arrive alors il est récompensé par 1000 points. Le joueur peut aussi tuer une puce, ce qui lui rapporte 200 points. Cette puce apparaît seulement si il y a moins de 5 champignons dans la zone de déplacement du joueur. Elle apparaît aléatoirement en une position \emph{x} de la grille et  descend jusqu'en bas du tableau, en déposant des champignons aléatoirement en \emph{y}. De plus, un scorpion apparaît aléatoirement à partir d'un certain niveau et se déplace sur une ligne en rendant les champignons vénéneux. Dès lors si le centipède touche un des champignons vénéneux alors celui-ci descendra en ligne droite jusqu'à la zone du joueur. Ce qui rend le jeu encore plus difficile et ardu.
+\begin{figure}[ht]%
+\center
+\caption{Tableau des scores}%
+\smallskip
+\includegraphics[width=\textwidth]{imgs/scoresCentipede.png}%
+\label{fig:ScoresCenti}%
+\end{figure}
+
+Concernant les déplacements des ennemis, la puce et le scorpion se déplacent en ligne droite à leur vitesse, sans avoir d'obstacles. L'araignée remonte et descend aléatoirement et constamment mais se décalera toujours dans la même direction, mangeant les champignons sur son chemin. Enfin, quand la tête d'un centipède rencontre un champignon (collision) ou un bord de l'écran, il descend d'une ligne en ignorant les champignons et repart dans l'autre sens. Les autres segments suivront le même chemin. S'il a atteint la limite en bas, il détache sa queue qui devient alors une tête sur la dernière ligne, mais lui remonte.
+
+%Si le joueur tue une partie du corps du centipède, celle-ci se transforme alors en champignon sur la position de sa mort et rapporte au joueur 10 points. Si le joueur touche la tête du centipède alors il gagne 100 points et transforme la tête du centipède en champignon. Si le joueur tue une araignée, celui-ci peut être récompensé en fonction des risques qu'il a pris pour tuer celle-ci. En effet, si le joueur tue l'araignée à une distance très proche de celle-ci alors il gagnera 900 points, à une distance moyenne il gagnera 600 points, et a une distance éloignée il gagnera 300 points. Le joueur peut également tuer les champignons qui possèdent chacun 4 points de vie. Il faut donc 4 tirs de la part du joueur afin de détruire un champignon. De plus les champignons ont une certaines visées stratégiques, car l'utilisateur peut les utiliser pour diriger le centipède là où il le veut et donc le tuer plus facilement. Le joueur peut tuer le scorpion qui rend les champignons vénéneux. Si le joueur y arrive alors il est récompensé par 1000 points. Le joueur peut aussi tuer une puce, ce qui lui rapporte 200 points. Cette puce apparaît seulement si il y a moins de 5 champignons dans la zone de déplacement du joueur. Elle apparaît aléatoirement en une position \emph{x} de la grille et  descend jusqu'en bas du tableau, en déposant des champignons aléatoirement en \emph{y}. De plus, un scorpion apparaît aléatoirement à partir d'un certain niveau et se déplace sur une ligne en rendant les champignons vénéneux. Dès lors si le centipède touche un des champignons vénéneux alors celui-ci descendra en ligne droite jusqu'à la zone du joueur. Ce qui rend le jeu encore plus difficile et ardu.

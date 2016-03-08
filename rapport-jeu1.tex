@@ -1,7 +1,7 @@
 \subsection{État du jeu}
 Nous essaierons de simplifier au plus le jeu ``Candy Crush'' par l'utilisation de structures.\smallskip
 
-Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés par certaines variables que nous présenterons ici : \\
+Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés par certaines variables que nous présenterons ici :
 
 
 \begin{typeag}[Niveau]
@@ -10,32 +10,32 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
  -       \variable{deplacementsUtilises}{entier}{Le nombre de déplacements effectués par l'utilisateur pendant la partie}\\
  -       \variable{grille}{[tailleGrilleX][tailleGrilleY]}{représente la grille d'entiers avec une taille en X et Y \\0 = case non jouable \\ 1,2,3,4,5 = couleur de bonbons }\\
  -       \variable{grilleDeDestruction}{booleen [tailleGrilleX][tailleGrilleY]}{est une seconde grille de booleens qui stocke les cases à détruire }
-  \end{typeag}		\\
+  \end{typeag}
   
-  On crée un type agrégé représentant la position en x et y afin de cibler les cases plus tard : \\
+  On crée un type agrégé représentant la position en x et y afin de cibler les cases plus tard :
   
   \begin{typeag}[Position]
  -       \variable{x}{entier}{position en x}\\
  -       \variable{y}{entier}{position en y}
-  \end{typeag}	\\
+  \end{typeag}
   
   Le joueur va interagir avec le jeu en déplaçant les cases afin de créer des combinaision de couleurs.
-  Ainsi, on crée une structure qui cible la case initiale et la case cible par leur position : \\
+  Ainsi, on crée une structure qui cible la case initiale et la case cible par leur position :
   
   \begin{typeag}[Joueur]
  -       \variable{caseADeplacer}{Position}{représente la position en x et y de la case que l'on souhaite déplacer}\\
  -       \variable{caseCible}{Position}{représente la position en x et y de la case que l'on cible}
-  \end{typeag}	\\
+  \end{typeag}
   
   La récompense du jeu se traduit par un score à obtenir afin de passer un niveau par exemple.
-  Il nous faut donc une structure qui stocke le score que l'on doit obtenir pour gagner et aussi qui stocke le score actuel du joueur : \\
+  Il nous faut donc une structure qui stocke le score que l'on doit obtenir pour gagner et aussi qui stocke le score actuel du joueur :
   
   \begin{typeag}[Score]
  -       \variable{scoreCible}{entier}{score à atteindre (présent au départ)}\\
  -       \variable{scoreActuel}{entier}{stockage du score après chaque coup du joueur}
-  \end{typeag}	\\
+  \end{typeag}
   
-  Cette structure va permettre de définir les conditions de validité d'une combinaison et si un déplacement est possible : \\
+  Cette structure va permettre de définir les conditions de validité d'une combinaison et si un déplacement est possible :
   
 \begin{typeag}[Case]
  -       \variable{caseTemporaire}{entier}{variable qui va stocker une case temporaire pour pouvoir inverser deux cases}\\
@@ -43,7 +43,7 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
   \end{typeag}
 
 \subsection{Configuration initiale du jeu}
-Nous allons maintenant analyser la situation de départ du jeu. Dès le départ, le joueur dispose d'un certain nombre d'éléments : \\
+Nous allons maintenant analyser la situation de départ du jeu. Dès le départ, le joueur dispose d'un certain nombre d'éléments :
 
 \begin{itemize}
 
@@ -97,7 +97,7 @@ grille[caseADeplacer.x][caseADeplacer.y] = caseTemporaire;
 		On peut alors commencer la détection des cases à détruire. Si il n'y a aucune case à détruire (lors de la première fois qu'on cherche), il n'y a donc pas de combinaison, on peut alors rééchanger les cases.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\center
 	\caption{\label{verifDepl} Déplacements}
 	\includegraphics{imgs/verifDepl}
@@ -109,7 +109,7 @@ Pour pouvoir détecter toutes les cases à détruire, nous utilisons une autre g
 
 On va ensuite parcourir la première grille ligne par ligne pour marquer tous les alignements horizontaux puis colonne par colonne pour les combinaisons verticales.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\center
 	\caption{\label{Detection} Détection}
 	\includegraphics{imgs/Detection}
@@ -156,7 +156,7 @@ if(i == tailleGrilleX - 1 && nbCasesAlignees >= 3)
 
 Pour détruire les cases, nous remplaçons les cases à détruire par -1 dans la grille.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\center
 	\caption{\label{Destruction} Destruction}
 	\includegraphics{imgs/Destruction}
@@ -187,7 +187,7 @@ Après ça, la seconde grille aura retrouvé son état d'origine, c'est-à-dire 
 	
 	Nous allons donc parcourir chaque colonne en partant du bas, et lorsqu'on trouve un -1, nous allons le remplacer par la prochaine case valide (qu'on mettra à -1).
 	
-\begin{figure}[h]
+\begin{figure}[ht]
 	\center
 	\caption{\label{Remplacement} Remplacement}
 	\includegraphics{imgs/Remplacement1}
@@ -261,7 +261,7 @@ On peut compter parmi celles-ci les bonus qui s'obtiennent par certaines combina
 \item
 	Combos : une combinaison en entraîne d'autres (ajout de points)
 \item
-	Une combinaison détruit les bonbons et d'autres les remplacent (tombent du dessus) 
+	Une combinaison détruit les bonbons et d'autres les remplacent (en tombant du dessus) % Edit pour l'overfull \hbox
 \item
 	Destruction automatique des bonbons spéciaux à la fin du niveau
 
