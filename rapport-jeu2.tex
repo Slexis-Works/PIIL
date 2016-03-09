@@ -7,7 +7,8 @@ vous avez un personnage :
 \begin{typeag}[Personnage]
         \variable{vies}{entier}{nombre de vies du personnage}\\
         \variable{positionX}{entier}{abscisse du personnage sur la zone}\\
-        \variable{positionY}{entier}{ordonnée du personnage sur la zone}
+        \variable{positionY}{entier}{ordonnée du personnage sur la zone}\\
+		\variable{vitesse}{constante entier}{vitesse de déplacement maximale, en pixels parcourus par tour de boucle}
 \end{typeag} (variable \texttt{joueur})
 
 une zone de jeu, représentant tout le jardin et la progression du joueur, composée de différents éléments : 
@@ -29,7 +30,7 @@ où  sont aussi disposés des champignons. À noter que la quantité et la posit
         \variable{positionY}{entier}{ordonnée du champignon sur la zone de jeu}
 \end{typeag}
 
-Pendant toute la partie, il y a aussi un ennemi, le centipède. Celui-ci peut être représenté par un tableau (que l'on nommera par la suite \texttt{segments}) de 12 segments, qui sont soit morts, soit une tête qui se déplace, soit un segment rattaché au précédent dans le tableau. Chaque segment est de forme :
+Pendant toute la partie, il y a aussi un ennemi, le centipède. Celui-ci peut être représenté par un tableau (que l'on nommera par la suite \texttt{segments}) de 12 segments, qui sont soit morts, soit une tête qui se déplace, soit un segment rattaché au précédent dans le tableau. Ce système permet de créer des chaînes détachables. Chaque segment est de forme :
 
 \begin{typeag}[Segment]
         \variable{etat}{entier}{prend la valeur : 0 si le segment est mort, 1 si le segment est une tête, 2 si le segment est rattaché au précédent}\\
@@ -39,12 +40,14 @@ Pendant toute la partie, il y a aussi un ennemi, le centipède. Celui-ci peut ê
         \variable{positionY}{entier}{ordonnée du segment sur la zone de jeu}
 \end{typeag}
 
+Viennent ensuite des éléments qui apparaissent éventuellement au cours de la partie.
+
 Pour contrer le centipède le joueur dispose d'un tir unique, dans le sens où il ne peut en tirer un deuxième tant que le premier est encore visible.
 Le tir est représenté comme cela : 
 
 \begin{typeag}[Projectile]
         \variable{actif}{booléen}{indique si le projectile est actuellement en mouvement ou prêt à être relancé}\\
-        \variable{vitesse}{entier}{indique la vitesse du tir : celui-ci a toujours la même vitesse dans tous les niveaux}\\
+        \variable{vitesse}{constante entier}{indique la vitesse du tir : celui-ci a toujours la même vitesse dans tous les niveaux}\\
         \variable{positionX}{entier ou réel}{abscisse du tir sur la zone de jeu}\\
         \variable{positionY}{entier ou réel}{ordonnée du tir sur la zone de jeu}
 \end{typeag}
