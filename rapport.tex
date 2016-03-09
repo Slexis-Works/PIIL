@@ -67,7 +67,7 @@
 % ---------------
 % Main
 % ---------------
-\title{Projet d'Initiation à l'Ingénierie Logicielle\\Rapport groupe \no 3}
+\title{Présentation des jeux Candy Crush Saga et Centipede\\{\Large Projet d'Initiation à l'Ingénierie Logicielle\\Rapport groupe \no 3}}
 \author{Mohamed \bsc{Lakhal}\\Émile \bsc{Jeannin}\\Théo \bsc{Mottet}\\Alexis \bsc{Cabodi}}
 \date{Révision du\\\today}
 
@@ -76,7 +76,7 @@
 \newpage
 \tableofcontents
 \bigskip
-\paragraph*{Note sur les extraits de codes :} Les encadrés contenant du code présents dans les analyses respectent la syntaxe du Java mais ne sont pas prévus pour être compilés tels quels. Les noms de variables en majuscules sont des constantes dont on peut ignorer la valeur.
+\paragraph*{Note sur les extraits de codes :} Les encadrés contenant du code présents dans les analyses respectent la syntaxe du Java mais ne sont pas prévus pour être compilés tels quels.% Les noms de variables en majuscules sont des constantes dont on peut ignorer la valeur.
 
 \newpage
 
@@ -85,7 +85,7 @@
 Le joueur se défend contre les centipèdes, les araignées, les scorpions et les puces. Le joueur gagne un round après avoir éliminé le centipède qui serpente entre les champignons. Actuellement le record du monde de \Centi en terme de score est de 7 111 111 points. Celui-ci est détenu par Donald \textsc{Hayes} qui a réalisé ce record le 5 novembre 2000. 
 C'est pourquoi, dans le cadre du projet d'initiation à l'ingénierie logicielle nous allons analyser ce jeu. Cela nous apportera une première approche du monde de la création de jeu vidéo et du développement d'un tel jeu. 
 
-\CandyS est un jeu gratuit développé par King, d'abord sur navigateur (Facebook) puis sur iOS, Android et enfin Windows Phone et Windows 10. \Candy est un jeu de puzzle qui reprend les mêmes principes que le \oeuvre{Bejeweled}, initialement sorti en 2001. Le but primitif de \CandyS (et aussi du \oeuvre{Bejeweled}) est d'intervertir deux éléments (bonbons pour \Candy et diamants pour \oeuvre{Bejeweled}) afin d'aligner au moins trois éléments identiques. S'ajoutent ensuite un certain nombre de bonus, qui rendent le jeu un peu plus intéressant. Le but étant d'obtenir les meilleurs scores ou bien d'atteindre un objectif préalablement défini par le niveau (2 142 niveaux en tout).Nous allons analyser ce jeu afin de comprendre comment il fonctionne et comment il a été conçu.
+\CandyS est un jeu gratuit développé par King, d'abord sur navigateur (Facebook) puis sur iOS, Android et enfin Windows Phone et Windows 10. \Candy est un jeu de puzzle qui reprend les mêmes principes que le \oeuvre{Bejeweled}, initialement sorti en 2001. Le but primitif de \CandyS (et aussi du \oeuvre{Bejeweled}) est d'intervertir deux éléments (bonbons pour \Candy et diamants pour \oeuvre{Bejeweled}) afin d'aligner au moins trois éléments identiques. S'ajoutent ensuite un certain nombre de bonus, qui rendent le jeu un peu plus intéressant. Le but étant d'obtenir les meilleurs scores ou bien d'atteindre un objectif préalablement défini par le niveau (2 142 niveaux en tout). Nous allons analyser ce jeu afin de comprendre comment il fonctionne et comment il a été conçu.
 
 \section{Jeu 1 : Candy Crush}
 \input{rapport-jeu1.tex}
@@ -94,9 +94,9 @@ C'est pourquoi, dans le cadre du projet d'initiation à l'ingénierie logicielle
 \input{rapport-jeu2.tex}
 
 \section{Conclusion}
-Afin de conclure, nous pouvons dire que \Centi est un jeu d'une difficulté extrême, qui demande beaucoup d'entraînement et beaucoup de réflexion. En effet, le jeu demande à l'utilisateur de comprendre les mécanismes du centipède, des ennemis et de gérer les événements aléatoires tels que les scorpions. De plus, le jeu demande l'adoption d'une certaine stratégie si l'utilisateur veut progresser plus loin et atteindre un score vraiment élevé. En effet, il peut créer des endroits dits " safe " ou alors créer des couloirs pour pouvoir tuer aisément le centipède.
+Afin de conclure, nous pouvons dire que \Centi est un jeu d'une difficulté extrême, qui demande beaucoup d'entraînement et beaucoup de réflexion. En effet, le jeu demande à l'utilisateur de comprendre les mécanismes du centipède, des ennemis et de gérer les événements aléatoires tels que les scorpions. De plus, le jeu demande l'adoption d'une certaine stratégie si l'utilisateur veut progresser plus loin et atteindre un score vraiment élevé. En effet, il peut créer des endroits dits \emph{safe} ou alors créer des couloirs pour pouvoir tuer aisément le centipède.
 
-\Candy n'est pas forcément un jeu plus simple. En effet, celui-ci demande de la réflexion afin de réaliser de meilleurs scores. L'utilisateur doit anticiper les déplacements des bonbons afin de créer des combinaisons à 4 ou 5 bonbons.  L'utilisateur doit constamment rechercher les meilleurs combinaisons... Même si l'enchaînement des bonus se fait la plupart du temps par hasard. De plus, bien que le principe fondamental de \Candy soit très simple, ce n'est pas aisé à programmer et de nombreux éléments peuvent venir renforcer et faire varier les plaisirs de l'utilisateur. 
+\Candy n'est pas forcément un jeu plus simple. En effet, celui-ci demande de la réflexion afin de réaliser de meilleurs scores. L'utilisateur doit anticiper les déplacements des bonbons afin de créer des combinaisons à 4 ou 5 bonbons.  L'utilisateur doit constamment rechercher les meilleures combinaisons... même si l'enchaînement des bonus se fait la plupart du temps par hasard. De plus, bien que le principe fondamental de \Candy soit très simple, ce n'est pas aisé à programmer et de nombreux éléments peuvent venir renforcer et faire varier les plaisirs de l'utilisateur. 
 
 Nous pouvons donc dire que ces deux jeux peuvent permettre à l'utilisateur de développer ses capacités de réflexion et d'adaptation.
 

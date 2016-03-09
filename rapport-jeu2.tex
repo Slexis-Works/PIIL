@@ -15,7 +15,6 @@ une zone de jeu, représentant tout le jardin et la progression du joueur, compo
 
 \begin{typeag}[« Zone de jeu » (Jardin)]
         \variable{champis}{Champignon[nbMax]}{contient l'ensemble des champignons existants, dans la limite des places disponibles (le nombre de cases de la grille : \texttt{largeurGrille*hauteurGrille})}\\
-        \variable{tir}{Projectile}{contient le tir unique que possède le joueur}\\
         \variable{couleurs}{entier}{indique le jeu de couleurs du niveau actuel}\\
         \variable{score}{entier}{nombre qui représente le score du joueur en temps réel}\\
         \variable{niveau}{entier}{compteur de niveau}
@@ -30,27 +29,28 @@ où  sont aussi disposés des champignons. À noter que la quantité et la posit
         \variable{positionY}{entier}{ordonnée du champignon sur la zone de jeu}
 \end{typeag}
 
+On remarque déjà que les positions et les vitesses sont en entier. On suppose que c'est le cas en interne car les images ne bougent que de pixel en pixel et les calculs flottants demandent trop de puissance pour une machine de l'époque.
+
 Pendant toute la partie, il y a aussi un ennemi, le centipède. Celui-ci peut être représenté par un tableau (que l'on nommera par la suite \texttt{segments}) de 12 segments, qui sont soit morts, soit une tête qui se déplace, soit un segment rattaché au précédent dans le tableau. Ce système permet de créer des chaînes détachables. Chaque segment est de forme :
 
 \begin{typeag}[Segment]
         \variable{etat}{entier}{prend la valeur : 0 si le segment est mort, 1 si le segment est une tête, 2 si le segment est rattaché au précédent}\\
-        \variable{vitesse}{entier}{indique la vitesse du centipede en fonction du niveau où se trouve le joueur}\\
-        \variable{direction}{entier}{si \texttt{estTete!=0} respectivement 0, 1, 2, 3 pour haut, bas, gauche, droite, sinon ne sert pas puisqu'il est mort}\\
+        \variable{vitesse}{entier}{indique la vitesse du centipède en fonction du niveau où se trouve le joueur et de si c'est une tête seule ou pas}\\
+        \variable{direction}{entier}{si \texttt{etat>0} respectivement 0, 1, 2, 3 pour haut, bas, gauche, droite, sinon ne sert pas puisqu'il est mort}\\
         \variable{positionX}{entier}{abscisse du segment sur la zone de jeu}\\
         \variable{positionY}{entier}{ordonnée du segment sur la zone de jeu}
 \end{typeag}
 
 Viennent ensuite des éléments qui apparaissent éventuellement au cours de la partie.
 
-Pour contrer le centipède le joueur dispose d'un tir unique, dans le sens où il ne peut en tirer un deuxième tant que le premier est encore visible.
-Le tir est représenté comme cela : 
+Pour contrer le centipède le joueur dispose d'un tir représenté comme cela : 
 
 \begin{typeag}[Projectile]
         \variable{actif}{booléen}{indique si le projectile est actuellement en mouvement ou prêt à être relancé}\\
         \variable{vitesse}{constante entier}{indique la vitesse du tir : celui-ci a toujours la même vitesse dans tous les niveaux}\\
         \variable{positionX}{entier ou réel}{abscisse du tir sur la zone de jeu}\\
         \variable{positionY}{entier ou réel}{ordonnée du tir sur la zone de jeu}
-\end{typeag}
+\end{typeag} (variable \texttt{tir})
 
 Néanmoins le joueur ne doit pas vaincre uniquement le centipède, d'autres ennemis apparaissent au fur et à mesure des niveaux que le joueur passe. On les nommera \texttt{araignee}, \texttt{puce} et \texttt{scorpion}. Ils sont représentés par un type commun : 
 
@@ -70,14 +70,10 @@ Dans cette seconde partie nous allons traiter la situation de départ du jeu. D�
 	\item Le joueur dispose d'un compteur de points : son score qui se situe en haut à gauche de son écran de jeu. Il est initialement à 0.
 	\item Le joueur peut également visualiser son score « record » en haut au milieu de son écran de jeu. De cette manière il sait quel score il doit atteindre pour s'améliorer.
 	\item Le joueur peut également visualiser le nombre de vies qu'il possède et qu'il lui reste à utiliser. Celles-ci sont représentées par une tête de lutin et sont situées à droite du score du joueur. On démarre avec 2 vies.
+	\item La  \emph{Zone de jeu}~ est initialisée avec un certain nombre de champignons répartis aléatoirement en nombre et en position.
 \end{itemize}
 
-Ensuite à chaque début de partie, le joueur à devant lui, sur la \emph{zone de jeu} : 
-
-\begin{itemize}
-	\item un certain nombre de champignons répartis aléatoirement en nombre et en position sur la  \emph{Zone de jeu}~;
-	\item le centipède, composé de 12 \texttt{Segment}. Cependant, le nombre de centipèdes sera égal au numéro du niveau, avec pour maximum 12. On aura \texttt{jardin.niveau-1} têtes seules et les segments restants formeront un seul centipède. Les centipèdes arrivent dans la partie depuis le haut de l'écran, et au milieu de celui-ci, sans pour autant être collés.
-\end{itemize}
+Ensuite à chaque début de partie, le centipède arrive sur la zone. Il est composé de 12 \texttt{Segment}. Cependant, le nombre de centipèdes sera égal au numéro du niveau, avec pour maximum 12. On aura donc \texttt{min( jardin.niveau - 1, 12)} têtes seules et les segments restants formeront un seul centipède. Les centipèdes arrivent dans la partie depuis le haut de l'écran, et au milieu de celui-ci, sans pour autant être collés.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -120,7 +116,7 @@ Dans un premier temps, le joueur peut se déplacer soit grâce aux flèches du c
 	%}
 %\end{lstlisting}
 
-Cependant, les mouvements sont restreints dans une zone particulière en bas de l'écran. À cela se rajoutent les collisions avec les champignons, puisqu'on ne peut pas aller dessus. Ainsi le déplacement pourrait s'implémenter ainsi :
+Cependant, les mouvements sont restreints dans une zone particulière en bas de l'écran. À cela se rajoutent les collisions avec les champignons, puisqu'on ne peut pas aller dessus. Ainsi le déplacement pourrait se résumer ainsi :
 
 \begin{algoinfo}
 	\item Si le joueur risque de sortir de sa zone de déplacement
@@ -165,7 +161,7 @@ De plus, le joueur afin de se défendre des ennemis a la possibilité de tirer u
 \begin{algoinfo}
 	\item Si le joueur appuie sur une touche de tir ou sur sa souris
 	\begin{itemize}
-		\item Si le projectile n'est pas actif, alors replacer le tir au centre du joueur et l'activer
+		\item Si le projectile n'est pas actif (\texttt{!tir.actif}), alors replacer le tir au centre du joueur et l'activer
 	\end{itemize}
 \end{algoinfo}
 
@@ -181,9 +177,9 @@ Cependant le joueur peut tout de même, afin de se défendre, éviter l'ennemi m
 
 \subsubsection{Évolution automatique du jeu}
 
-Il y a beaucoup de collisions qui sont tout le temps vérifiées, sans que le joueur ne puisse agir dessus autrement qu'en déplaçant son personnage. On a déjà étudié la collision entre le joueur et son environnement. Passons maintenant à son projectile.
+Il y a beaucoup de collisions qui sont tout le temps vérifiées, sans que le joueur ne puisse agir dessus autrement qu'en déplaçant son personnage ou en tirant sur les obstacles. On a déjà étudié la collision entre le joueur et son environnement. Passons maintenant à son projectile.
 
-Si le projectile tiré rentre en contact avec un ennemi, alors l'ennemi meurt et le joueur gagne des points en fonction de l'ennemi tué, selon un barème très précis, détaillé dans le tableau de la figure \ref{fig:ScoresCenti}. On remarque que détruire le segment d'un centipède fait apparaître une champignon le plus près possible de sa position. Par ailleurs, le score attribué par l'élimination de l'araignée dépend de la distance avec 3 valeurs possibles.
+Si le projectile tiré rentre en contact avec un ennemi, alors l'ennemi meurt et le joueur gagne des points en fonction de l'ennemi tué, selon un barème très précis, détaillé dans le tableau de la figure \ref{fig:ScoresCenti}. On remarque que détruire le segment d'un centipède fait apparaître un champignon le plus près possible de sa position. Par ailleurs, le score attribué par l'élimination de l'araignée dépend de la distance avec 3 valeurs possibles.
 
 \begin{figure}[ht]%
 \center
@@ -193,6 +189,6 @@ Si le projectile tiré rentre en contact avec un ennemi, alors l'ennemi meurt et
 \label{fig:ScoresCenti}%
 \end{figure}
 
-Concernant les déplacements des ennemis, la puce et le scorpion se déplacent en ligne droite à leur vitesse, sans avoir d'obstacles. L'araignée remonte et descend aléatoirement et constamment mais se décalera toujours dans la même direction, mangeant les champignons sur son chemin. Enfin, quand la tête d'un centipède rencontre un champignon (collision) ou un bord de l'écran, il descend d'une ligne en ignorant les champignons et repart dans l'autre sens. Les autres segments suivront le même chemin. S'il a atteint la limite en bas, il détache sa queue qui devient alors une tête sur la dernière ligne, mais lui remonte.
+Concernant les déplacements des ennemis, la puce et le scorpion se déplacent en ligne droite à leur vitesse, sans avoir d'obstacles. La condition d'apparition de la puce est :\\\texttt{pucePartieDepuisLongtemps\\\&\& nbChampignonsDansZoneJoueur <= limiteChampignons}\\où la première variable passe à vrai après un certain temps dès le niveau 2, la seconde variable est calculée à l'aide d'une boucle et la troisième dépend du niveau. L'araignée remonte et descend aléatoirement et constamment mais se décalera toujours dans la même direction, mangeant les champignons sur son chemin. Enfin, quand la tête d'un centipède rencontre un champignon (collision) ou un bord de l'écran, il descend d'une ligne en ignorant les champignons et repart dans l'autre sens. Les autres segments suivront le même chemin. S'il a atteint la limite en bas, il détache sa queue qui devient alors une tête sur la dernière ligne, mais lui remonte.
 
 %Si le joueur tue une partie du corps du centipède, celle-ci se transforme alors en champignon sur la position de sa mort et rapporte au joueur 10 points. Si le joueur touche la tête du centipède alors il gagne 100 points et transforme la tête du centipède en champignon. Si le joueur tue une araignée, celui-ci peut être récompensé en fonction des risques qu'il a pris pour tuer celle-ci. En effet, si le joueur tue l'araignée à une distance très proche de celle-ci alors il gagnera 900 points, à une distance moyenne il gagnera 600 points, et a une distance éloignée il gagnera 300 points. Le joueur peut également tuer les champignons qui possèdent chacun 4 points de vie. Il faut donc 4 tirs de la part du joueur afin de détruire un champignon. De plus les champignons ont une certaines visées stratégiques, car l'utilisateur peut les utiliser pour diriger le centipède là où il le veut et donc le tuer plus facilement. Le joueur peut tuer le scorpion qui rend les champignons vénéneux. Si le joueur y arrive alors il est récompensé par 1000 points. Le joueur peut aussi tuer une puce, ce qui lui rapporte 200 points. Cette puce apparaît seulement si il y a moins de 5 champignons dans la zone de déplacement du joueur. Elle apparaît aléatoirement en une position \emph{x} de la grille et  descend jusqu'en bas du tableau, en déposant des champignons aléatoirement en \emph{y}. De plus, un scorpion apparaît aléatoirement à partir d'un certain niveau et se déplace sur une ligne en rendant les champignons vénéneux. Dès lors si le centipède touche un des champignons vénéneux alors celui-ci descendra en ligne droite jusqu'à la zone du joueur. Ce qui rend le jeu encore plus difficile et ardu.
