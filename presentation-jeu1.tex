@@ -1,40 +1,54 @@
 \subsection{État du jeu}
 \begin{frame}{État du jeu}
-	{\texttt{*} signifie constant} % Ça fait bizarre là où c'est mais ça gêne pas
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
-			\begin{typeag}{...}
-				\variable{vies}{entier}\\
-			\end{typeag}
-			
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{typeag}{...}
-				\variable{positionX}{entier ou réel}\\
-				\variable{positionY}{entier ou réel}
-			\end{typeag}
-		\end{column}
-	\end{columns}
+	{\texttt{*} signifie constant}
+	\begin{typeag}{Niveau}
+		\variable{numeroNiveau}{entier}\\
+		\variable{deplacementMax}{entier}\\
+		\variable{deplacementUtilises}{entier}\\
+		\variable{grille}{entier [tailleX][tailleY]}\\
+		\variable{grilleDeDestruction}{boolean [tailleX][tailleY]}
+	\end{typeag}
+	~\\
+	\begin{typeag}{Position}
+		\variable{x}{entier}\\
+		\variable{y}{entier}
+	\end{typeag}
+\end{frame}
+
+\begin{frame}{État du jeu}
+	{\texttt{*} signifie constant}
+	\begin{typeag}{Case}
+		\variable{caseADeplacer}{Position}\\
+		\variable{caseCible}{Position}\\
+		\variable{caseTemporaire}{entier}\\
+		\variable{nbCasesAlignes}{entier}
+	\end{typeag}
+	~\\
+	\begin{typeag}{Score}
+		\variable{cible}{entier}\\
+		\variable{actuel}{entier}
+	\end{typeag}
 \end{frame}
 
 \subsection{Configuration initiale du jeu}
 \begin{frame}{Configuration initiale du jeu}
-	\begin{typeag}{...}
-		\variablei{vies}{5}\\
-	\end{typeag}
+	\begin{itemize}
+		\item
+			Décor: grille modulable selon le niveau
+		\item
+			Bonbons : 5 couleurs différentes
+		\item
+			Nombre de coups limité
+		\item
+			Jauge de points en fonction du score (0 au départ)
+		\item
+			Objectif à réaliser pour gagner
+		\item 
+			Viabilité : pas de combinaisons directes au départ
+	\end{itemize}
 \end{frame}
 
 \subsection{Évolution de l'état du jeu}
-\begin{frame}[fragile]{Boucle principale}
-	\begin{lstlisting}
-		while ( vies > 0 ) {
-			// Recuperation des entrees
-			// Traitement
-			// Affichage a l'ecran
-		}
-		afficher("Vous devez attendre 8 ans avant de pouvoir rejouer !");
-	\end{lstlisting}
-\end{frame}
 
 \begin{frame}{Deplacement - vérification}
 	\begin{columns}

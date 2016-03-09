@@ -8,8 +8,8 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
  -       \variable{numeroNiveau}{entier}{Les niveaux sont représentés par leur numéro (présent au départ)}\\
  -       \variable{deplacementMax}{entier}{Le nombre de déplacements maximum possibles selon le niveau}\\
  -       \variable{deplacementsUtilises}{entier}{Le nombre de déplacements effectués par l'utilisateur pendant la partie}\\
- -       \variable{grille}{[tailleGrilleX][tailleGrilleY]}{représente la grille d'entiers avec une taille en X et Y \\0 = case non jouable \\ 1,2,3,4,5 = couleur de bonbons }\\
- -       \variable{grilleDeDestruction}{booleen [tailleGrilleX][tailleGrilleY]}{est une seconde grille de booleens qui stocke les cases à détruire }
+ -       \variable{grille}{[tailleX][tailleY]}{représente la grille d'entiers avec une taille en X et Y \\0 = case non jouable \\ 1,2,3,4,5 = couleur de bonbons }\\
+ -       \variable{grilleDeDestruction}{booleen [tailleX][tailleY]}{est une seconde grille de booleens qui stocke les cases à détruire }
   \end{typeag}
   
   On crée un type agrégé représentant la position en x et y afin de cibler les cases plus tard :
@@ -19,28 +19,22 @@ Ce jeu comme beaucoup d'autres est jouable en niveaux qui sont caractérisés pa
  -       \variable{y}{entier}{position en y}
   \end{typeag}
   
-  Le joueur va interagir avec le jeu en déplaçant les cases afin de créer des combinaision de couleurs.
-  Ainsi, on crée une structure qui cible la case initiale et la case cible par leur position :
-  
-  \begin{typeag}[Joueur]
- -       \variable{caseADeplacer}{Position}{représente la position en x et y de la case que l'on souhaite déplacer}\\
- -       \variable{caseCible}{Position}{représente la position en x et y de la case que l'on cible}
-  \end{typeag}
-  
   La récompense du jeu se traduit par un score à obtenir afin de passer un niveau par exemple.
   Il nous faut donc une structure qui stocke le score que l'on doit obtenir pour gagner et aussi qui stocke le score actuel du joueur :
   
   \begin{typeag}[Score]
- -       \variable{scoreCible}{entier}{score à atteindre (présent au départ)}\\
- -       \variable{scoreActuel}{entier}{stockage du score après chaque coup du joueur}
+ -       \variable{cible}{entier}{score à atteindre (présent au début du niveau)}\\
+ -       \variable{actuel}{entier}{stockage du score après chaque coup du joueur}
   \end{typeag}
   
-  Cette structure va permettre de définir les conditions de validité d'une combinaison et si un déplacement est possible :
+  Quelques autres variables qui vont nous permettre de gérer le déplacement des cases et de vérifier la validité d'une combinaison :
   
 \begin{typeag}[Case]
  -       \variable{caseTemporaire}{entier}{variable qui va stocker une case temporaire pour pouvoir inverser deux cases}\\
- -       \variable{nbCasesAlignes}{entier}{variable qui va compter le nombre de cases alignées}
-  \end{typeag}
+ -       \variable{nbCasesAlignes}{entier}{variable qui va compter le nombre de cases alignées}\\
+ -		 \variable{caseADeplacer}{Position}{représente la position en x et y de la case que l'on souhaite déplacer}\\
+ -       \variable{caseCible}{Position}{représente la position en x et y de la case que l'on cible}
+ \end{typeag}
 
 \subsection{Configuration initiale du jeu}
 Nous allons maintenant analyser la situation de départ du jeu. Dès le départ, le joueur dispose d'un certain nombre d'éléments :
@@ -51,7 +45,7 @@ Nous allons maintenant analyser la situation de départ du jeu. Dès le départ,
 	Tout d'abord, le décor est constitué d'une grille modulable selon le niveau, c'est à dire avec une surface différente.
 	Par exemple, on peut avoir une niveau assez simple (souvent au début) qui a une seule grille rectangulaire ou dans des niveaux plus complexes, plusieurs grilles avec des formes différentes.
 \item
-	Les bonbons qui constituent le jeu ont des couleurs qui va permettent de faire des combinaisons.
+	Les bonbons qui constituent le jeu ont des couleurs qui vont permettre de faire des combinaisons.
 	Couleurs : jaune, rouge, vert, bleu et orange.
 \item
 	À l'écran sera affiché le nombre de coups limite afin de réussir le niveau % On a enlevé le temps, je crois
@@ -61,7 +55,7 @@ Nous allons maintenant analyser la situation de départ du jeu. Dès le départ,
 \item
 	Le joueur a aussi directement accès à son objectif à réaliser pour passer le niveau et son avancement dans celui-ci.
 \item 
- 	Pour que le jeu soit viable, il faut qu'il n'y ait pas de combinaisons directes au départ (\emph{ex.: 3 bonbons alignés dès le début}). % mais aussi qu'il y ait au moins une solution possible si on déplace un bonbon d'une case. --> Un peu difficile pour l'analyse...
+ 	Pour que le jeu soit viable, il ne doit pas y avoir de combinaisons directes au départ (\emph{ex.: 3 bonbons alignés dès le début}).
 	
 \end{itemize}
 
@@ -75,7 +69,7 @@ Avant de pouvoir échanger deux cases, il faut vérifier plusieurs choses :
 	\item
 		Le déplacement ne sort pas de la grille
 \begin{lstlisting}
-caseDestination.x >= 0 && caseDestination.x < tailleGrilleX && caseDestination.y >= 0 && caseDestination.y < tailleGrilleY
+caseDestination.x >= 0 && caseDestination.x < tailleX && caseDestination.y >= 0 && caseDestination.y < tailleY
 \end{lstlisting}
 	\item
 		Le déplacement ne va pas sur une case non-jouable
@@ -147,7 +141,7 @@ Il faudra également réinitialiser la couleur temporaire à la case actuelle et
 	l'on ne veut pas que les alignements au bord de grille soient oubliés.
 	La condition ressemblera à ceci :
 \begin{lstlisting}
-if(i == tailleGrilleX - 1 && nbCasesAlignees >= 3)
+if(i == tailleX - 1 && nbCasesAlignees >= 3)
 \end{lstlisting}
 	Afin d'utiliser la même fonction que celle qu'on utilisera pour noter les cases dans la seconde grille, on incrémentera i.
 \end{itemize}
@@ -165,9 +159,9 @@ Pour détruire les cases, nous remplaçons les cases à détruire par -1 dans la
 Cela se traduit comme suit :
 
 \begin{lstlisting}
-for(int j = 0; j < tailleGrilleY; j++)
+for(int j = 0; j < tailleY; j++)
 {
-	for(int i = 0; i < tailleGrilleX; i++)
+	for(int i = 0; i < tailleX; i++)
 	{
 		if(grilleDeDestruction[i][j] == true)
 		{
@@ -187,7 +181,7 @@ Après ça, la seconde grille aura retrouvé son état d'origine, c'est-à-dire 
 	
 	Nous allons donc parcourir chaque colonne en partant du bas, et lorsqu'on trouve un -1, nous allons le remplacer par la prochaine case valide (qu'on mettra à -1).
 	
-\begin{figure}[ht]
+\begin{figure}[]
 	\center
 	\caption{\label{Remplacement} Remplacement}
 	\includegraphics{imgs/Remplacement1}
@@ -219,9 +213,9 @@ if(grille[k][j] == -1) {
 il suffit de parcourir chaque case de la grille et d'y insérer un entier aléatoire compris entre 1 et 5.
 
 \begin{lstlisting}
-for(int j = 0; j < tailleGrilleY; j++)
+for(int j = 0; j < tailleY; j++)
 {
-	for(int i = 0; i < tailleGrilleX; i++)
+	for(int i = 0; i < tailleX; i++)
 	{
 		if(grille[i][j] == -1;
 			grille[i][j] = (int)(Math.random() * 5) + 1;
@@ -233,9 +227,9 @@ for(int j = 0; j < tailleGrilleY; j++)
 
 Ce processus Détection-Destruction-Remplacement devra être répété jusqu'à ce qu'il n'y ait plus aucune case à détruire.
 
-De plus, un score à atteindre pourra être fixé. Pour cela, chaque destruction de case (quand on les mets à -1) incrémentera d'un certain nombre de points la variable scoreActuel. Le jeu pourra s'arrêter lorsque le score ciblé est atteint.
+De plus, un score à atteindre pourra être fixé. Pour cela, chaque destruction de case (quand on les mets à -1) incrémentera d'un certain nombre de points la variable score.actuel. Le jeu pourra s'arrêter lorsque le score ciblé est atteint.
 \begin{lstlisting}
-scoreActuel >= scoreCible
+score.actuel >= score.cible
 \end{lstlisting}
 
 Il est également possible de compter le nombre de coups que le joueur a utilisé. En effet, il suffit de le faire lors de l'échangement des cases. Si cet échange est par la suite annulé, le nombre de coups sera remis à son état d'avant l'échange.
@@ -249,7 +243,6 @@ On peut compter parmi celles-ci les bonus qui s'obtiennent par certaines combina
 
 \item
 	Combinaison de 4 bonbons = un bonbon spécial qui détruit une ligne ou une colonne entière (selon le sens de ses rayures)
-
 \item
 	Combinaison de 5 bonbons = bombe multicolore (l'associer avec un autre bonbon détruit tout les bonbons du type associé présents dans la grille)
 \item
@@ -264,5 +257,6 @@ On peut compter parmi celles-ci les bonus qui s'obtiennent par certaines combina
 	Une combinaison détruit les bonbons et d'autres les remplacent (en tombant du dessus) % Edit pour l'overfull \hbox
 \item
 	Destruction automatique des bonbons spéciaux à la fin du niveau
-
+\item
+	Une solution au moins si on déplace un bonbon d'une case.
 \end{itemize}
